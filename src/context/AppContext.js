@@ -11,11 +11,14 @@ export const AppProvider = ({children}) => {
     const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [regName, setRegName] = useState("");
+    const [prodData, setProdData] = useState([]);
     const [regPhone, setRegPhone] = useState("");
+    const [error, setError] = useState(null);
     const [regPassword, setRegPassword] = useState("");
     const [isAuth, setIsAuth] = useState(false);
     const [imageGallery, setImageGallery] = useState('');
 
+    // const API_ENDPOINT = "https://647dde56af984710854a8134.mockapi.io/Posts";
 
     //** Р Е Г И С Т Р А Ц И Я **//
     const register = async (name, phone, password) => {
@@ -38,7 +41,7 @@ export const AppProvider = ({children}) => {
         });
     };
 
-    //** Авторизация **//
+    //** А В Т О Р И З А Ц И Я **//
     const login = (name, phone, password) => {
         setIsLoading(true);
         axios.post(`${BASE_URL}`, {
@@ -54,6 +57,7 @@ export const AppProvider = ({children}) => {
         });
     };
 
+    //** Д Е А В Т О Р И З А Ц И Я **//
     const logout = () => {
         setIsLoading(true);
         axios
@@ -76,7 +80,7 @@ export const AppProvider = ({children}) => {
             });
     };
 
-
+    //** З А Г Р У З К А  Ф О Т О **//
     const openGallery = () => {
         const option = {
             mediaType: 'photo',
@@ -95,9 +99,31 @@ export const AppProvider = ({children}) => {
         })
     }
 
+    //** О Ч И С Т И Т Ь  Ф О Т О **//
     const clearImage = () => {
-        setImageGallery(null)
+        setImageGallery('')
     }
+
+    //** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
+    const fetchData = async (url) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(url);
+            const json = await response.json();
+            setProdData(json);
+            setIsLoading(false);
+
+        } catch (error) {
+            setError(error);
+            console.log("%c%s", "color: red;", error);
+            setIsLoading(false);
+        }
+    };
+
+
+
+
+
 
 
     return (
@@ -111,7 +137,9 @@ export const AppProvider = ({children}) => {
             regPhone,
             imageGallery,
             clearImage,
-            openGallery
+            openGallery,
+            fetchData,
+            prodData
         }}>
             {children}
         </AppContext.Provider>

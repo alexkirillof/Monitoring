@@ -18,33 +18,19 @@ const API_ENDPOINT = "https://647dde56af984710854a8134.mockapi.io/Posts";
 
 export const TodoList = ({navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [fullData, setFullData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showList, setShowList] = useState(false);
-    const {clearImage} = useContext(AppContext);
+    const {clearImage, fetchData, prodData} = useContext(AppContext);
 
 
     useEffect(() => {
         setIsLoading(true);
         fetchData(API_ENDPOINT);
-
+        setIsLoading(false);
     }, []);
-    const fetchData = async (url) => {
-        try {
-            setIsLoading(true);
-            const response = await fetch(url);
-            const json = await response.json();
-            setData(json);
-            setIsLoading(false);
 
-        } catch (error) {
-            setError(error);
-            console.log("%c%s", "color: red;", error);
-            setIsLoading(false);
-        }
-    };
 
 
     if (isLoading) {
@@ -83,7 +69,7 @@ export const TodoList = ({navigation}) => {
             {/*--render списка--*/}
 
             {showList && <FlatList
-                data={data}
+                data={prodData}
                 keyExtractor={(item) => {
                     item.id.toString();
                 }}
