@@ -17,6 +17,7 @@ export const AppProvider = ({children}) => {
     const [imageGallery, setImageGallery] = useState('');
 
 
+    //** Р Е Г И С Т Р А Ц И Я **//
     const register = async (name, phone, password) => {
         setIsLoading(true);
         await axios.post(`${BASE_URL}`, {
@@ -37,7 +38,7 @@ export const AppProvider = ({children}) => {
         });
     };
 
-
+    //** Авторизация **//
     const login = (name, phone, password) => {
         setIsLoading(true);
         axios.post(`${BASE_URL}`, {

@@ -33,10 +33,10 @@ export const TodoList = ({navigation}) => {
     }, []);
     const fetchData = async (url) => {
         try {
+            setIsLoading(true);
             const response = await fetch(url);
             const json = await response.json();
             setData(json);
-            setFullData(json);
             setIsLoading(false);
 
         } catch (error) {
@@ -74,6 +74,7 @@ export const TodoList = ({navigation}) => {
             <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
+                    fetchData(API_ENDPOINT);
                     setShowList(true);
                 }}>
                 <Text style={styles.btnText}>ПОЛУЧИТЬ / ОБНОВИТЬ   СПИСОК</Text>
@@ -86,16 +87,16 @@ export const TodoList = ({navigation}) => {
                 keyExtractor={(item) => {
                     item.id.toString();
                 }}
+                showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => {
-                    setShowList("");
+                    fetchData(API_ENDPOINT);
                 }}/>}
                 renderItem={({item}) => (
                     <View style={styles.itemContainer}>
                             <View style={styles.itemDescr}>
                                 <Text> Задание: </Text>
-                                <Text> {item.product_group} </Text>
-                                <Text> {item.article} </Text>
-                                <Text> {item.description} </Text>
+                                <Text style={styles.itemText}> {item.description} </Text>
+                                <Text style={styles.itemText}> {item.competitor} </Text>
                             </View>
                         <TouchableOpacity  key={item.id}
                                            style={styles.btn}
@@ -134,8 +135,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         backgroundColor: "#f3f6f0",
         borderRadius: 10,
-        height: 100,
-        marginLeft: 10,
+        height: 110,
         marginTop: 15,
         padding: 10,
     },
@@ -172,6 +172,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     itemDescr:{
-        marginRight:20
+        justifyContent:"flex-start",
+        marginRight:10,
+        width:"55%"
+    },
+    itemText:{
+        fontSize:14
     }
 });

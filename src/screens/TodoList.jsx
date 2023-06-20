@@ -8,9 +8,9 @@ export const TodoListScreen = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+
         <TodoList navigation={navigation}/>
-      </ScrollView>
+
     </SafeAreaView>
   );
 };

@@ -37,7 +37,7 @@ export const ArticleContent = ({route, navigation}) => {
                 </View>
             </View>
             <View style={styles.block}>
-                <Text style={styles.textName}> Товарная группа: {product_group}</Text>
+                <Text style={styles.text}> Товарная группа: {product_group}</Text>
                 <Text style={styles.text}> Артикул: {article}</Text>
                 <Text style={styles.text}> Наименование: {description}</Text>
                 <Text style={styles.text}> Магазин конкурента: {competitor}</Text>
@@ -62,7 +62,9 @@ const styles = StyleSheet.create({
 
     },
     header:{
-        flexDirection:"row"
+        flexDirection:"row",
+        justifyContent:'flex-start',
+        alignItems:'center'
     },
     textName: {
         fontSize: 16,
@@ -81,12 +83,12 @@ const styles = StyleSheet.create({
         borderRadius: 25,
     },
     arrowBack: {
-        height: 40,
-
+        height: 50,
+        aspectRatio: 1,
         backgroundColor: "#ccc",
         borderRadius: 25,
         paddingHorizontal: 6,
-
+        marginRight:30
     },
     arrow: {
         color: "#fff",
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10
     },
+
 
 });
 
