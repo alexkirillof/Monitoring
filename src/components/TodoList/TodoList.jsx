@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo, useContext} from "react";
+import React, {useState, useEffect,  useContext} from "react";
 
 import {
     StyleSheet,
@@ -14,15 +14,17 @@ import {
     ScrollView,
 } from "react-native";
 import {AppContext} from "../../context/AppContext";
+
 const API_ENDPOINT = "https://647dde56af984710854a8134.mockapi.io/Posts";
 
-export const TodoList = ({navigation}) => {
+export const TodoList = ({route, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [fullData, setFullData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [showList, setShowList] = useState(false);
-    const {clearImage, fetchData, prodData} = useContext(AppContext);
+    const {clearImage, fetchData, prodData, clearForm} = useContext(AppContext);
+
 
 
     useEffect(() => {
@@ -30,7 +32,6 @@ export const TodoList = ({navigation}) => {
         fetchData(API_ENDPOINT);
         setIsLoading(false);
     }, []);
-
 
 
     if (isLoading) {
@@ -63,40 +64,44 @@ export const TodoList = ({navigation}) => {
                     fetchData(API_ENDPOINT);
                     setShowList(true);
                 }}>
-                <Text style={styles.btnText}>ПОЛУЧИТЬ / ОБНОВИТЬ   СПИСОК</Text>
+                <Text style={styles.btnText}>ПОЛУЧИТЬ / ОБНОВИТЬ СПИСОК</Text>
             </TouchableOpacity>
 
             {/*--render списка--*/}
 
             {showList && <FlatList
                 data={prodData}
-                keyExtractor={(item) => {
-                    item.id.toString();
+                keyExtractor={(item,index) => {
+                    return item.id + index;
                 }}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => {
                     fetchData(API_ENDPOINT);
                 }}/>}
                 renderItem={({item}) => (
-                    <View style={styles.itemContainer}>
-                            <View style={styles.itemDescr}>
-                                <Text> Задание: </Text>
-                                <Text style={styles.itemText}> {item.description} </Text>
-                                <Text style={styles.itemText}> {item.competitor} </Text>
-                            </View>
-                        <TouchableOpacity  key={item.id}
-                                           style={styles.btn}
-                                           onPress={() => {navigation.navigate("Article", {
-                                               id: item.id,
-                                               product_group: item.product_group,
-                                               article: item.article,
-                                               description: item.description,
-                                               competitor: item.competitor,
-                                           })
-                                               {clearImage()}
-                                           }}>
+                    <View style={styles.itemContainer} key={item.description}>
+                        <View style={styles.itemDescr}>
+                            <Text> Задание: </Text>
+                            <Text style={styles.itemText}> {item.description} </Text>
+                            <Text style={styles.itemText}> {item.competitor} </Text>
+                        </View>
+                        <TouchableOpacity style={styles.btn}
+                                          key={item.id}
+                                          onPress={() => {
+                                              navigation.navigate("Article", {
+                                                  id: item.id,
+                                                  product_group: item.product_group,
+                                                  article: item.article,
+                                                  description: item.description,
+                                                  competitor: item.competitor,
+                                              })
+                                              {
+                                                  clearImage();
+                                                  clearForm();
+                                              }
+                                          }}>
 
-                                <Text>Взять в работу</Text>
+                            <Text>Взять в работу</Text>
 
                         </TouchableOpacity>
 
@@ -157,12 +162,12 @@ const styles = StyleSheet.create({
     btnText: {
         fontWeight: "bold",
     },
-    itemDescr:{
-        justifyContent:"flex-start",
-        marginRight:10,
-        width:"55%"
+    itemDescr: {
+        justifyContent: "flex-start",
+        marginRight: 10,
+        width: "55%"
     },
-    itemText:{
-        fontSize:14
+    itemText: {
+        fontSize: 14
     }
 });

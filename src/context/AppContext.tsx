@@ -8,20 +8,23 @@ import {launchImageLibrary} from "react-native-image-picker";
 export const AppContext = createContext();
 
 export const AppProvider = ({children}) => {
-    const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [regName, setRegName] = useState("");
     const [prodData, setProdData] = useState([]);
-    const [regPhone, setRegPhone] = useState("");
+    const [regPhone, setRegPhone] = useState(null);
     const [error, setError] = useState(null);
     const [regPassword, setRegPassword] = useState("");
     const [isAuth, setIsAuth] = useState(false);
     const [imageGallery, setImageGallery] = useState('');
+    const [isPromotion, setIsPromotion] = useState(false);
+    const [price, setPrice] = useState(null);
+    const [comment, setComment] = useState('');
+    const [noPrice, setNoPrice] = useState(false);
 
     // const API_ENDPOINT = "https://647dde56af984710854a8134.mockapi.io/Posts";
 
     //** Р Е Г И С Т Р А Ц И Я **//
-    const register = async (name, phone, password) => {
+    const register = async (name: string, phone: number, password: string) => {
         setIsLoading(true);
         await axios.post(`${BASE_URL}`, {
             name, phone, password,
@@ -42,7 +45,7 @@ export const AppProvider = ({children}) => {
     };
 
     //** А В Т О Р И З А Ц И Я **//
-    const login = (name, phone, password) => {
+    const login = (name: string, phone: number, password: string) => {
         setIsLoading(true);
         axios.post(`${BASE_URL}`, {
             name, phone, password,
@@ -105,7 +108,7 @@ export const AppProvider = ({children}) => {
     }
 
     //** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
-    const fetchData = async (url) => {
+    const fetchData = async (url: string) => {
         try {
             setIsLoading(true);
             const response = await fetch(url);
@@ -120,27 +123,100 @@ export const AppProvider = ({children}) => {
         }
     };
 
+    //** О Ч И С Т И Т Ь   Ф О Р М У **//
+    const clearForm = () => {
+        setPrice(null);
+        setIsPromotion(false);
+        setPrice(null);
+        setNoPrice(false);
+        setComment('');
+    }
+
+//** О Т П Р А В И Т Ь  Д А Н Н Ы Е  Ф О Р М Ы  Н А   С Е Р Е В Е Р **//
+
+    const data = new FormData();
+    data.append('my_photo', {
+        uri: imageGallery.uri, // your file path string
+        name: imageGallery.fileName,
+        type: 'image/jpg'
+    })
+    const sendData = async (regName: string, product_group: string, article: string, data: any, description: string, competitor: string, price: number, isPromotion: boolean, noPrice: boolean, comment: string) => {
+        setIsLoading(true);
+
+        await axios.post(`${BASE_URL}`, {
+            "Кто отправил": regName,
+            "Товарная группа": product_group,
+            "Артикул": article,
+            "Фото": data,
+            "Наименование": description,
+            "Конкурент": competitor,
+            "Цена":price,
+            "Акция":isPromotion,
+            "Ценник отсутствует":noPrice,
+            "Коментарий":comment
+        }).catch(e => {
+            console.log(`register error${e}`);
+            setIsLoading(false);
+        });
+    };
 
 
+    //** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
+    type AppContextProps = {
+        isLoading: boolean
+        isAuth: boolean
+        register: () => {}
+        login: () => {}
+        logout: () => {}
+        regName: string
+        regPhone: number
+        imageGallery: string
+        clearImage: () => {}
+        openGallery: () => {}
+        fetchData: () => {}
+        prodData: string[]
+        isPromotion: boolean
+        setIsPromotion: (isPromotion: boolean) => void
+        comment: string
+        setComment: () => {}
+        price: number
+        setPrice: () => {}
+        noPrice: boolean
+        setNoPrice: (noPrice: boolean) => void
+        clearForm: () => {}
+        sendData: () => {}
+        data: any
+    };
 
-
+    const defaultValue: AppContextProps = {
+        isLoading: isLoading,
+        isAuth: isAuth,
+        register: register,
+        login: login,
+        logout: logout,
+        regName: regName,
+        regPhone: regPhone,
+        imageGallery: imageGallery,
+        clearImage: clearImage,
+        openGallery: openGallery,
+        fetchData: fetchData,
+        prodData: prodData,
+        isPromotion: isPromotion,
+        setIsPromotion: setIsPromotion,
+        comment: comment,
+        setComment: setComment,
+        price: price,
+        setPrice: setPrice,
+        noPrice: noPrice,
+        setNoPrice: setNoPrice,
+        clearForm: clearForm,
+        sendData: sendData,
+        data: data
+    };
 
 
     return (
-        <AppContext.Provider value={{
-            isLoading,
-            isAuth,
-            register,
-            login,
-            logout,
-            regName,
-            regPhone,
-            imageGallery,
-            clearImage,
-            openGallery,
-            fetchData,
-            prodData
-        }}>
+        <AppContext.Provider value={defaultValue}>
             {children}
         </AppContext.Provider>
     );

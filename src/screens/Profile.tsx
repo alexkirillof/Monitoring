@@ -6,7 +6,7 @@ import { AppContext } from "../context/AppContext";
 
 
 export const Profile = () => {
-  const { regName, regPhone, logout } = useContext(AppContext);
+  const { regName, regPhone, logout, clearImage } = useContext(AppContext);
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -35,7 +35,10 @@ export const Profile = () => {
           <TouchableOpacity
             title="В Ы Х О Д"
             style={styles.btn}
-            onPress={() => {logout();}}>
+            onPress={() => {
+                          logout();
+                          clearImage();
+            }}>
             <Text style={styles.btnText}>В Ы Х О Д</Text>
           </TouchableOpacity>
         </View>

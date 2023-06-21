@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import { AppContext } from "../context/AppContext";
 import Spinner from "react-native-loading-spinner-overlay";
 

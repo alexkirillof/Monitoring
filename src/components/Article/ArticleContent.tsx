@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useContext} from "react";
-
 import {
     StyleSheet,
     Text,
@@ -9,18 +8,30 @@ import {
     FlatList,
     Image,
     TouchableOpacity,
-    RefreshControl,
-
+    RefreshControl, Button,
 } from "react-native";
+import CheckBox from '@react-native-community/checkbox';
 import {AppContext} from "../../context/AppContext";
 
 
 export const ArticleContent = ({route, navigation}) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [data, setData] = useState([]);
     const [error, setError] = useState(null);
-    const { imageGallery,openGallery } = useContext(AppContext);
-
+    const {
+        imageGallery,
+        regName,
+        openGallery,
+        isPromotion,
+        setIsPromotion,
+        price,
+        setPrice,
+        comment,
+        setComment,
+        noPrice,
+        setNoPrice,
+        sendData,
+        data
+    } = useContext(AppContext);
     const {id, product_group, article, description, competitor} = route.params || {};
 
 
@@ -46,10 +57,49 @@ export const ArticleContent = ({route, navigation}) => {
                     <Text>Загрузить фото</Text>
                 </TouchableOpacity>
 
-                {imageGallery != null &&
+                {imageGallery != '' &&
                     <Image source={{uri: imageGallery.uri}}
                            style={styles.img}/>
                 }
+                <TextInput style={styles.input}
+                           title="Цена"
+                           value={price}
+                           keyboardType="number-pad"
+                           placeholder={"Ц Е Н А"}
+                           onChangeText={text => setPrice(text)}
+                />
+                <View style={styles.checkboxContainer}>
+                    <CheckBox
+                        value={isPromotion}
+                        onValueChange={setIsPromotion}
+                        style={styles.checkbox}
+                    />
+                    <Text style={styles.label}>Акция</Text>
+                </View>
+                <View style={styles.checkboxContainer}>
+                    <CheckBox
+                        value={noPrice}
+                        onValueChange={setNoPrice}
+                        style={styles.checkbox}
+                    />
+                    <Text style={styles.label}>Ценник отсутствует</Text>
+                </View>
+                <TextInput style={[styles.input, styles.commentInput]}
+                           title="К О М Е Н Т А Р И Й"
+                           placeholder="К О М Е Н Т А Р И Й"
+                           value={comment}
+                           onChangeText={text => setComment(text)}
+                />
+                <View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
+                    <TouchableOpacity style={styles.btn}
+                                      title="О Т П Р А В И Т Ь"
+                                      onPress={() => {
+                                          sendData(regName, product_group,article,data, description, competitor, price,isPromotion,noPrice,comment )
+                                          console.log('ушло')
+                                      }}>
+                        <Text style={styles.textName}>О Т П Р А В И Т Ь</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -61,10 +111,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
 
     },
-    header:{
-        flexDirection:"row",
-        justifyContent:'flex-start',
-        alignItems:'center'
+    header: {
+        flexDirection: "row",
+        justifyContent: 'flex-start',
+        alignItems: 'center'
     },
     textName: {
         fontSize: 16,
@@ -85,28 +135,28 @@ const styles = StyleSheet.create({
     arrowBack: {
         height: 50,
         aspectRatio: 1,
-        backgroundColor: "#ccc",
+        backgroundColor: "#b9fbb0",
         borderRadius: 25,
         paddingHorizontal: 6,
-        marginRight:30
+        marginRight: 30
     },
     arrow: {
-        color: "#fff",
+        color: "#000",
         fontSize: 26,
         aspectRatio: 1,
 
     },
     headerTitle: {
         alignItems: "center",
-        marginBottom: 30,
-        marginTop: 30,
+        marginBottom: 15,
+        marginTop: 15,
     },
     headerText: {
         fontSize: 20,
         fontWeight: "bold",
     },
     btn: {
-        width: "40%",
+        width: "55%",
         height: 40,
         backgroundColor: "#b9fbb0",
         elevation: 3,
@@ -116,16 +166,38 @@ const styles = StyleSheet.create({
             width: 2,
             height: 2
         },
-        marginBottom: 20,
-        marginTop: 20,
+        marginBottom: 15,
+        marginTop: 10,
         padding: 10
     },
     img: {
-        width: 200,
-        height: 200,
-        borderRadius: 10
+        width: 180,
+        height: 180,
+        borderRadius: 10,
+        marginBottom: 10
     },
-
+    checkboxContainer: {
+        flexDirection: 'row',
+        marginBottom: 5,
+    },
+    checkbox: {
+        alignSelf: 'center',
+    },
+    label: {
+        margin: 8,
+    },
+    input: {
+        marginBottom: 5,
+        borderWidth: 1,
+        borderColor: "#bbb",
+        borderRadius: 5,
+        paddingHorizontal: 14,
+        height: 40,
+        width: "55%"
+    },
+    commentInput: {
+        width: "100%"
+    }
 
 });
 
