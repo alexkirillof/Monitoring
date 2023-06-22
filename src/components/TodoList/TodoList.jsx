@@ -81,9 +81,9 @@ export const TodoList = ({route, navigation}) => {
                 renderItem={({item}) => (
                     <View style={styles.itemContainer} key={item.description}>
                         <View style={styles.itemDescr}>
-                            <Text> Задание: </Text>
-                            <Text style={styles.itemText}> {item.description} </Text>
-                            <Text style={styles.itemText}> {item.competitor} </Text>
+                            <Text>Задание: </Text>
+                            <Text style={styles.itemText}>{item.description} </Text>
+                            <Text style={styles.itemText}>{item.competitor} </Text>
                         </View>
                         <TouchableOpacity style={styles.btn}
                                           key={item.id}
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: 110,
         marginTop: 15,
-        padding: 10,
+        padding: 14,
     },
     image: {
         width: 40,
