@@ -140,7 +140,11 @@ export const AppProvider = ({children}) => {
         name: imageGallery.fileName,
         type: 'image/jpg'
     })
-    const sendData = async (regName: string, product_group: string, article: string, data: any, description: string, competitor: string, price: number, isPromotion: boolean, noPrice: boolean, comment: string) => {
+
+    const actualDate = new Date().toLocaleString();
+
+
+    const sendData = async (regName: string, product_group: string, article: string, data: any, description: string, competitor: string, price: number, isPromotion: boolean, noPrice: boolean, comment: string, actualDate: string) => {
         setIsLoading(true);
 
         await axios.post(`${BASE_URL}`, {
@@ -150,10 +154,11 @@ export const AppProvider = ({children}) => {
             "Фото": data,
             "Наименование": description,
             "Конкурент": competitor,
-            "Цена":price,
-            "Акция":isPromotion,
-            "Ценник отсутствует":noPrice,
-            "Коментарий":comment
+            "Цена": price,
+            "Акция": isPromotion,
+            "Ценник отсутствует": noPrice,
+            "Коментарий": comment,
+            "Дата и время": actualDate
         }).catch(e => {
             console.log(`register error${e}`);
             setIsLoading(false);
@@ -186,6 +191,7 @@ export const AppProvider = ({children}) => {
         clearForm: () => {}
         sendData: () => {}
         data: any
+        actualDate:string
     };
 
     const defaultValue: AppContextProps = {
@@ -211,7 +217,8 @@ export const AppProvider = ({children}) => {
         setNoPrice: setNoPrice,
         clearForm: clearForm,
         sendData: sendData,
-        data: data
+        data: data,
+        actualDate:actualDate
     };
 
 

@@ -30,7 +30,8 @@ export const ArticleContent = ({route, navigation}) => {
         noPrice,
         setNoPrice,
         sendData,
-        data
+        data,
+        actualDate
     } = useContext(AppContext);
     const {id, product_group, article, description, competitor} = route.params || {};
 
@@ -94,7 +95,7 @@ export const ArticleContent = ({route, navigation}) => {
                     <TouchableOpacity style={styles.btn}
                                       title="О Т П Р А В И Т Ь"
                                       onPress={() => {
-                                          sendData(regName, product_group,article,data, description, competitor, price,isPromotion,noPrice,comment )
+                                          sendData(regName, product_group,article,data, description, competitor, price,isPromotion,noPrice,comment,actualDate )
                                           console.log('ушло')
                                       }}>
                         <Text style={styles.textName}>О Т П Р А В И Т Ь</Text>
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     },
     checkboxContainer: {
         flexDirection: 'row',
-        marginBottom: 5,
+
     },
     checkbox: {
         alignSelf: 'center',
