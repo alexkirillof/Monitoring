@@ -19,12 +19,6 @@ export const TabStack = () => {
 
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Личный кабинет" component={Profile} options={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarIcon: ({ focused, color, size}) => <ProfileSvg color={focused ? "blue" : "#374b4e"} />,
-
-      }} />
       <Tab.Screen name="TodoList" component={TodoListScreen} options={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -35,6 +29,12 @@ export const TabStack = () => {
         tabBarShowLabel: false,
         tabBarIcon: ({ focused, color, size}) => <ArticleSvg color={focused ? "blue" : "#374b4e"} />,
       }} />
+        <Tab.Screen name="Личный кабинет" component={Profile} options={{
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({ focused, color, size}) => <ProfileSvg color={focused ? "blue" : "#374b4e"} />,
+
+        }} />
     </Tab.Navigator>
   );
 };
