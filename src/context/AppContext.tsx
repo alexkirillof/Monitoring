@@ -21,9 +21,9 @@ export const AppProvider = ({children}) => {
 	const [noPrice, setNoPrice] = useState(false)
 
 	//** А В Т О Р И З А Ц И Я **//
-	const login = (name: string, phone: number, password: string) => {
+	const login = async (name: string, phone: number, password: string): void => {
 		setIsLoading(true)
-		axios
+		await axios
 			.post(`${BASE_URL}`, {
 				name,
 				phone,
@@ -33,11 +33,9 @@ export const AppProvider = ({children}) => {
 				let userInfo = res.config.data
 				let parsedData = JSON.parse(userInfo)
 				setRegName(() => parsedData.name)
-				console.log(regName)
 				setRegPhone(() => parsedData.phone)
-				console.log(regPhone)
 				setRegPassword(() => parsedData.password)
-				console.log(regPassword)
+				console.log(regName)
 				setIsAuth(true)
 				setIsLoading(false)
 			})
@@ -165,7 +163,6 @@ export const AppProvider = ({children}) => {
 	type AppContextProps = {
 		isLoading: boolean
 		isAuth: boolean
-		register: () => {}
 		login: () => {}
 		logout: () => {}
 		regName: string
@@ -192,7 +189,6 @@ export const AppProvider = ({children}) => {
 	const defaultValue: AppContextProps = {
 		isLoading: isLoading,
 		isAuth: isAuth,
-		register: register,
 		login: login,
 		logout: logout,
 		regName: regName,
