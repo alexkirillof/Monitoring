@@ -1,6 +1,7 @@
-export const BASE_URL = 'https://enr4xakm8goy.x.pipedream.net'
+export const BASE_URL_NEW = 'http://10.252.133.186:3000/products'
+export const BASE_URL = 'http://10.252.133.186:3000/auth'
 
-export const API_ENDPOINT = 'https://647dde56af984710854a8134.mockapi.io/Posts'
+export const API_ENDPOINT = 'http://10.252.133.186:3000/products'
 
 //
 //   // export const BASE_URL = 'https://octo.hk/NOM7M7S3QuaMCCR7pMKZ'

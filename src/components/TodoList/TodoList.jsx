@@ -11,7 +11,8 @@ import {
 	Image,
 	TouchableOpacity,
 	RefreshControl,
-	ScrollView
+	ScrollView,
+	SectionList
 } from 'react-native'
 import {AppContext} from '../../context/AppContext'
 import {API_ENDPOINT} from '../../config'
@@ -67,6 +68,16 @@ export const TodoList = ({route, navigation}) => {
 			{showList && (
 				<FlatList
 					data={prodData}
+					style={{marginBottom: 150}}
+					ListHeaderComponentStyle={{
+						height: 45,
+						width: '100%',
+						backgroundColor: '#cee8ed',
+						justifyContent: 'center',
+						alignItems: 'center',
+						marginBottom: 15,
+						borderRadius: 6
+					}}
 					keyExtractor={(item, index) => {
 						return item.id + index
 					}}
@@ -80,30 +91,51 @@ export const TodoList = ({route, navigation}) => {
 						/>
 					}
 					renderItem={({item}) => (
-						<View style={styles.itemContainer} key={item.description}>
-							<View style={styles.itemDescr}>
-								<Text>Задание: </Text>
-								<Text style={styles.itemText}>{item.description} </Text>
-								<Text style={styles.itemText}>{item.competitor} </Text>
+						<View key={item.tasks.article}>
+							<View style={styles.itemContainer}>
+								<Text style={{fontWeight: 700, fontSize: 14, marginBottom: 10}}>
+									Задание: {item.competitor}
+								</Text>
+								{item.tasks.map(
+									(
+										pos //вывод тасков
+									) => (
+										<View key={pos.article}>
+											<Text>{pos.description}</Text>
+											<Text>{pos.article}</Text>
+
+											<Text>{pos.product_group}</Text>
+											<TouchableOpacity
+												style={styles.btn}
+												key={pos.article}
+												onPress={() => {
+													navigation.navigate('Article', {
+														product_group: pos.product_group,
+														article: pos.article,
+														description: pos.description,
+														competitor: item.competitor
+													})
+													{
+														clearImage()
+														clearForm()
+													}
+												}}>
+												<Text>Взять в работу</Text>
+											</TouchableOpacity>
+											{pos.article !=
+												item.tasks[item.tasks.length - 1].article && (
+												<View
+													style={{
+														height: 2,
+														backgroundColor: '#9A8F92',
+														width: '100%',
+														marginBottom: 10
+													}}></View>
+											)}
+										</View>
+									)
+								)}
 							</View>
-							<TouchableOpacity
-								style={styles.btn}
-								key={item.id}
-								onPress={() => {
-									navigation.navigate('Article', {
-										id: item.id,
-										product_group: item.product_group,
-										article: item.article,
-										description: item.description,
-										competitor: item.competitor
-									})
-									{
-										clearImage()
-										clearForm()
-									}
-								}}>
-								<Text>Взять в работу</Text>
-							</TouchableOpacity>
 						</View>
 					)}
 				/>
@@ -121,11 +153,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1
 	},
 	itemContainer: {
-		flexDirection: 'row',
-		alignItems: 'flex-start',
 		backgroundColor: '#f3f6f0',
 		borderRadius: 10,
-		height: 110,
 		marginTop: 15,
 		padding: 14
 	},
@@ -155,7 +184,7 @@ const styles = StyleSheet.create({
 			height: 2
 		},
 		marginBottom: 20,
-		marginTop: 20,
+		marginTop: 10,
 		padding: 10
 	},
 	btnText: {

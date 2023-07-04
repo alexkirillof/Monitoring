@@ -1,6 +1,7 @@
 import React, {createContext, useState} from 'react'
 import axios from 'axios'
 import {BASE_URL} from '../config'
+import {BASE_URL_NEW} from '../config'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {launchImageLibrary} from 'react-native-image-picker'
 
@@ -21,22 +22,20 @@ export const AppProvider = ({children}) => {
 	const [noPrice, setNoPrice] = useState(false)
 
 	//** А В Т О Р И З А Ц И Я **//
-	const login = async (name: string, phone: number, password: string): void => {
+	const login = async (phone: number, password: string): void => {
 		setIsLoading(true)
 		await axios
 			.post(`${BASE_URL}`, {
-				name,
 				phone,
 				password
 			})
 			.then(res => {
-				let userInfo = res.config.data
-				let parsedData = JSON.parse(userInfo)
-				setRegName(() => parsedData.name)
-				setRegPhone(() => parsedData.phone)
-				setRegPassword(() => parsedData.password)
-				console.log(regName)
-				setIsAuth(true)
+				let userInfo = res.data
+				console.log(userInfo)
+				setRegName(() => userInfo.username)
+				setRegPhone(() => userInfo.phone)
+				setRegPassword(() => userInfo.password)
+				setIsAuth(userInfo.isAuth)
 				setIsLoading(false)
 			})
 			.catch(e => {
@@ -49,16 +48,16 @@ export const AppProvider = ({children}) => {
 	const logout = () => {
 		setIsLoading(true)
 		axios
-			.post(`${BASE_URL}`, {})
-			.then(res => {
-				console.log(res.config.data)
+			.post(`${BASE_URL}/logout`, {})
+			.then(() => {
 				AsyncStorage.removeItem('isAuth')
 				setIsAuth(false)
 				setRegName('')
 				setRegPassword('')
-				setRegPhone('')
+				setRegPhone(null)
 				setIsLoading(false)
 			})
+
 			.catch(e => {
 				console.log(`logout error ${e}`)
 				setIsLoading(false)
@@ -79,7 +78,6 @@ export const AppProvider = ({children}) => {
 			} else {
 				const data = res.assets[0]
 				setImageGallery(data)
-				console.log(data)
 			}
 		})
 	}
@@ -93,13 +91,14 @@ export const AppProvider = ({children}) => {
 	const fetchData = async (url: string) => {
 		try {
 			setIsLoading(true)
-			const response = await fetch(url)
-			const json = await response.json()
-			setProdData(json)
-			setIsLoading(false)
+			// const response = await fetch(url, {method: 'get'})
+			axios.get(url).then(res => {
+				setProdData(res.data)
+				setIsLoading(false)
+				console.log(res.data)
+			})
 		} catch (error) {
 			setError(error)
-			console.log('%c%s', 'color: red;', error)
 			setIsLoading(false)
 		}
 	}
@@ -125,33 +124,41 @@ export const AppProvider = ({children}) => {
 	const actualDate = new Date().toLocaleString()
 
 	const sendData = async (
-		regName: string,
+		user_name: string,
 		product_group: string,
 		article: string,
-		data: any,
+		photo: any,
 		description: string,
 		competitor: string,
 		price: number,
-		isPromotion: boolean,
+		promotion: boolean,
 		noPrice: boolean,
 		comment: string,
 		actualDate: string
 	) => {
 		setIsLoading(true)
-
 		await axios
-			.post(`${BASE_URL}`, {
-				'Кто отправил': regName,
-				'Товарная группа': product_group,
-				Артикул: article,
-				Фото: data,
-				Наименование: description,
-				Конкурент: competitor,
-				Цена: price,
-				Акция: isPromotion,
-				'Ценник отсутствует': noPrice,
-				Коментарий: comment,
-				'Дата и время': actualDate
+			.post(
+				`${BASE_URL_NEW}`,
+				{
+					user_name: regName,
+					product_group: product_group,
+					article: article,
+					photo: data,
+					description: description,
+					competitor: competitor,
+					price: price,
+					promotion: isPromotion,
+					no_price: noPrice,
+					comment: comment,
+					actual_date: actualDate
+				},
+				{
+					headers: {'Content-Type': 'application/json; charset=UTF-8'}
+				}
+			)
+			.then(res => {
+				console.log(res)
 			})
 			.catch(e => {
 				console.log(`register error${e}`)

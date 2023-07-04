@@ -1,27 +1,19 @@
 import React, {useState, useContext} from 'react'
 
-import {Button, StyleSheet, TextInput, View} from 'react-native'
+import {Button, StyleSheet, TextInput, View, Text} from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay'
 import {AppContext} from '../context/AppContext'
 
 const LoginScreen = ({navigation}) => {
-	const [name, setName] = useState('')
 	const [phone, setPhone] = useState(null)
 	const [password, setPassword] = useState('')
 	const {isLoading, login} = useContext(AppContext)
 
 	return (
 		<View style={styles.container}>
+			<Text style={styles.header}>А В Т О Р И З А Ц И Я</Text>
 			<Spinner visible={isLoading} />
 			<View style={styles.wrapper}>
-				<TextInput
-					style={styles.input}
-					title='Имя Фамилия'
-					placeholder='Имя Фамилия'
-					value={name}
-					image={false}
-					onChangeText={text => setName(text)}
-				/>
 				<TextInput
 					style={styles.input}
 					title='Номер телефона'
@@ -41,7 +33,7 @@ const LoginScreen = ({navigation}) => {
 					style={styles.link}
 					title='В Х О Д'
 					onPress={() => {
-						login(name, phone, password)
+						login(phone, password)
 					}}
 				/>
 			</View>
@@ -59,7 +51,7 @@ const styles = StyleSheet.create({
 		width: '80%'
 	},
 	input: {
-		marginBottom: 12,
+		marginBottom: 20,
 		borderWidth: 1,
 		borderColor: '#bbb',
 		borderRadius: 5,
@@ -67,6 +59,12 @@ const styles = StyleSheet.create({
 	},
 	link: {
 		color: 'blue'
+	},
+	header: {
+		alignItems: 'center',
+		fontSize: 20,
+		marginBottom: 30,
+		marginTop: 30
 	}
 })
 export default LoginScreen

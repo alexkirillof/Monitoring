@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet} from 'react-native'
+import {Keyboard, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {ArticleContent} from '../components/Article/ArticleContent'
 import {useNavigation, useRoute} from '@react-navigation/native'
