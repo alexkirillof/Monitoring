@@ -12,7 +12,7 @@ interface IProps {
 
 export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const [user, setUser] = useState([]);
+	const [user, setUser] = useState({});
 	const [regName, setRegName] = useState('');
 	const [regPhone, setRegPhone] = useState('');
 	const [prodData, setProdData] = useState([]);
