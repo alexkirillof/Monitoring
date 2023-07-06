@@ -10,9 +10,15 @@ interface IProps {
 	children: React.ReactNode;
 }
 
+interface IUser {
+	userName: string;
+	userPhone: number;
+	isAuth: boolean;
+}
+
 export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const [user, setUser] = useState({});
+	const [user, setUser] = useState<IUser | null>(null);
 	const [regName, setRegName] = useState('');
 	const [regPhone, setRegPhone] = useState('');
 	const [prodData, setProdData] = useState([]);
@@ -34,10 +40,12 @@ export const AppProvider = ({children}: IProps) => {
 			.then(async res => {
 				await AsyncStorage.setItem('isAuth', 'true');
 				let userInfo = res.data;
-				console.log(userInfo);
-				setRegName(() => userInfo.username);
-				setRegPhone(() => userInfo.phone);
-				setIsAuth(userInfo.isAuth);
+				const newUser: IUser = {
+					userName: userInfo.username,
+					userPhone: userInfo.phone,
+					isAuth: userInfo.isAuth
+				};
+				setUser(newUser);
 				setIsLoading(false);
 			})
 			.catch(e => {
@@ -53,9 +61,7 @@ export const AppProvider = ({children}: IProps) => {
 			.post(`${BASE_URL}/logout`, {})
 			.then(() => {
 				AsyncStorage.removeItem('isAuth');
-				setIsAuth(false);
-				setRegName('');
-				setRegPhone(null);
+				setUser(null);
 				setIsLoading(false);
 			})
 
@@ -138,7 +144,7 @@ export const AppProvider = ({children}: IProps) => {
 	) => {
 		setIsLoading(true);
 		const itemData = {
-			user_name: regName,
+			user_name: user?.userName,
 			product_group: product_group,
 			article: article,
 			description: description,
@@ -169,12 +175,10 @@ export const AppProvider = ({children}: IProps) => {
 	//** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
 	type AppContextProps = {
 		isLoading: boolean;
-		isAuth: boolean;
-		setIsAuth: Function;
 		login: Function;
 		logout: Function;
-		regName: string;
-		regPhone: number;
+		user: IUser | null;
+		setUser: Function;
 		imageGallery: string;
 		clearImage: Function;
 		openGallery: Function;
@@ -184,7 +188,7 @@ export const AppProvider = ({children}: IProps) => {
 		setIsPromotion: (isPromotion: boolean) => void;
 		comment: string;
 		setComment: Function;
-		price: string;
+		price: number;
 		setPrice: Function;
 		noPrice: boolean;
 		setNoPrice: Function;
@@ -196,12 +200,10 @@ export const AppProvider = ({children}: IProps) => {
 
 	const defaultValue: AppContextProps = {
 		isLoading: isLoading,
-		isAuth: isAuth,
-		setIsAuth: setIsAuth,
 		login: login,
 		logout: logout,
-		regName: regName,
-		regPhone: regPhone,
+		user: user,
+		setUser: setUser,
 		imageGallery: imageGallery,
 		clearImage: clearImage,
 		openGallery: openGallery,
