@@ -93,9 +93,11 @@ export const TodoList = ({route, navigation}) => {
 					renderItem={({item}) => (
 						<View key={item.tasks.article}>
 							<View style={styles.itemContainer}>
-								<Text style={{fontWeight: 700, fontSize: 14, marginBottom: 10}}>
-									Задание: {item.competitor}
-								</Text>
+								<View style={styles.itemHeaderContainer}>
+									<Text style={styles.itemHeader}>
+										Задание: {item.competitor}
+									</Text>
+								</View>
 								{item.tasks.map(
 									(
 										pos //вывод тасков
@@ -186,6 +188,18 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		marginTop: 10,
 		padding: 10
+	},
+	itemHeaderContainer: {
+		backgroundColor: '#cee8ed',
+		borderRadius: 6,
+		height: 40,
+		alignItems: 'center',
+		marginBottom: 10,
+		justifyContent: 'center'
+	},
+	itemHeader: {
+		fontSize: 16,
+		fontWeight: 'bold'
 	},
 	btnText: {
 		fontWeight: 'bold'
