@@ -19,15 +19,7 @@ interface IUser {
 export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<IUser | null>(null);
-	const [regName, setRegName] = useState('');
-	const [regPhone, setRegPhone] = useState('');
 	const [prodData, setProdData] = useState([]);
-	const [isAuth, setIsAuth] = useState(false);
-	const [imageGallery, setImageGallery] = useState('');
-	const [isPromotion, setIsPromotion] = useState(false);
-	const [price, setPrice] = useState(0);
-	const [comment, setComment] = useState('');
-	const [noPrice, setNoPrice] = useState(false);
 
 	//** А В Т О Р И З А Ц И Я **//
 	const login = async (phone: number, password: string) => {
@@ -38,7 +30,6 @@ export const AppProvider = ({children}: IProps) => {
 				password
 			})
 			.then(async res => {
-				await AsyncStorage.setItem('isAuth', 'true');
 				let userInfo = res.data;
 				const newUser: IUser = {
 					userName: userInfo.username,
@@ -46,6 +37,7 @@ export const AppProvider = ({children}: IProps) => {
 					isAuth: userInfo.isAuth
 				};
 				setUser(newUser);
+				await AsyncStorage.setItem('user', JSON.stringify(newUser));
 				setIsLoading(false);
 			})
 			.catch(e => {
@@ -59,8 +51,8 @@ export const AppProvider = ({children}: IProps) => {
 		setIsLoading(true);
 		axios
 			.post(`${BASE_URL}/logout`, {})
-			.then(() => {
-				AsyncStorage.removeItem('isAuth');
+			.then(async res => {
+				await AsyncStorage.removeItem('user');
 				setUser(null);
 				setIsLoading(false);
 			})
@@ -72,37 +64,14 @@ export const AppProvider = ({children}: IProps) => {
 	};
 
 	//** З А Г Р У З К А  Ф О Т О **//
-	const openGallery = () => {
-		const option = {
-			mediaType: 'photo',
-			quality: 1
-		};
-		launchImageLibrary(option, res => {
-			if (res.didCancel) {
-				console.log('User Cancelled image picker');
-			} else if (res.errorCode) {
-				console.log(res.errorMessage);
-			} else {
-				const data: string = res.assets[0];
-				setImageGallery(data);
-			}
-		});
-	};
-
-	//** О Ч И С Т И Т Ь  Ф О Т О **//
-	const clearImage = () => {
-		setImageGallery('');
-	};
 
 	//** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
 	const fetchData = async (url: string) => {
 		try {
 			setIsLoading(true);
-			// const response = await fetch(url, {method: 'get'})
 			axios.get(url).then(res => {
 				setProdData(res.data);
 				setIsLoading(false);
-				console.log(res.data);
 			});
 		} catch (error) {
 			console.log(error);
@@ -110,66 +79,71 @@ export const AppProvider = ({children}: IProps) => {
 		}
 	};
 
-	//** О Ч И С Т И Т Ь   Ф О Р М У **//
-	const clearForm = () => {
-		setPrice(0);
-		setIsPromotion(false);
-		setNoPrice(false);
-		setComment('');
-	};
-
 	//** О Т П Р А В И Т Ь  Д А Н Н Ы Е  Ф О Р М Ы  Н А   С Е Р Е В Е Р **//
-
-	const data = new FormData();
-	data.append('my_photo', {
-		uri: imageGallery.uri, // your file path string
-		name: imageGallery.fileName,
-		type: 'image/jpg'
-	});
 
 	const actualDate = new Date().toLocaleString();
 
-	const sendData = async (
-		user_name: string,
-		product_group: string,
-		article: string,
-		photo: any,
-		description: string,
-		competitor: string,
-		price: number,
-		promotion: boolean,
-		noPrice: boolean,
-		comment: string,
-		actualDate: string
-	) => {
+	const sendData = async ({
+		imageGallery,
+		product_group,
+		article,
+		description,
+		competitor,
+		price,
+		promotion,
+		noPrice,
+		comment,
+		actualDate
+	}: {
+		imageGallery: any;
+		product_group: string;
+		article: string;
+		description: string;
+		competitor: string;
+		price: string;
+		promotion: boolean;
+		noPrice: boolean;
+		comment: string;
+		actualDate: string;
+	}) => {
 		setIsLoading(true);
-		const itemData = {
-			user_name: user?.userName,
-			product_group: product_group,
-			article: article,
-			description: description,
-			competitor: competitor,
-			price: price,
-			promotion: isPromotion,
-			no_price: noPrice,
-			comment: comment,
-			actual_date: actualDate
-		};
-		for (let key in itemData) {
-			const item: any = itemData[key];
-			data.append(key, item);
+		const data = new FormData();
+
+		data.append('my_photo', {
+			uri: imageGallery.uri, // your file path string
+			name: imageGallery.fileName,
+			type: 'image/jpg'
+		});
+		if (user) {
+			const itemData = {
+				user_name: user.userName,
+				user_phone: user.userPhone,
+				product_group: product_group,
+				article: article,
+				description: description,
+				competitor: competitor,
+				price: price,
+				promotion: promotion,
+				no_price: noPrice,
+				comment: comment,
+				actual_date: actualDate
+			};
+			for (let key in itemData) {
+				const item: any = itemData[key];
+				data.append(key, item);
+			}
+			await axios
+				.post(`${BASE_URL_NEW}`, data, {
+					headers: {'Content-Type': 'multipart/form-data'}
+				})
+				.then(res => {
+					// console.log(res.data);
+				})
+				.catch(e => {
+					console.log(`register error${e}`);
+					setIsLoading(false);
+				});
 		}
-		await axios
-			.post(`${BASE_URL_NEW}`, data, {
-				headers: {'Content-Type': 'multipart/form-data'}
-			})
-			.then(res => {
-				console.log(res);
-			})
-			.catch(e => {
-				console.log(`register error${e}`);
-				setIsLoading(false);
-			});
 	};
 
 	//** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
@@ -179,22 +153,11 @@ export const AppProvider = ({children}: IProps) => {
 		logout: Function;
 		user: IUser | null;
 		setUser: Function;
-		imageGallery: string;
 		clearImage: Function;
-		openGallery: Function;
 		fetchData: Function;
 		prodData: string[];
-		isPromotion: boolean;
-		setIsPromotion: (isPromotion: boolean) => void;
-		comment: string;
-		setComment: Function;
-		price: number;
-		setPrice: Function;
-		noPrice: boolean;
-		setNoPrice: Function;
 		clearForm: Function;
 		sendData: Function;
-		data: any;
 		actualDate: string;
 	};
 
@@ -204,22 +167,9 @@ export const AppProvider = ({children}: IProps) => {
 		logout: logout,
 		user: user,
 		setUser: setUser,
-		imageGallery: imageGallery,
-		clearImage: clearImage,
-		openGallery: openGallery,
 		fetchData: fetchData,
 		prodData: prodData,
-		isPromotion: isPromotion,
-		setIsPromotion: setIsPromotion,
-		comment: comment,
-		setComment: setComment,
-		price: price,
-		setPrice: setPrice,
-		noPrice: noPrice,
-		setNoPrice: setNoPrice,
-		clearForm: clearForm,
 		sendData: sendData,
-		data: data,
 		actualDate: actualDate
 	};
 

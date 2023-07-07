@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext} from 'react';
 
 import {
 	StyleSheet,
@@ -13,28 +13,28 @@ import {
 	RefreshControl,
 	ScrollView,
 	SectionList
-} from 'react-native'
-import {AppContext} from '../../context/AppContext'
-import {API_ENDPOINT} from '../../config'
+} from 'react-native';
+import {AppContext} from '../../context/AppContext';
+import {API_ENDPOINT} from '../../config';
 
 export const TodoList = ({route, navigation}) => {
-	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState(null)
-	const [showList, setShowList] = useState(false)
-	const {clearImage, fetchData, prodData, clearForm} = useContext(AppContext)
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const [showList, setShowList] = useState(false);
+	const {clearImage, fetchData, prodData, clearForm} = useContext(AppContext);
 
 	useEffect(() => {
-		setIsLoading(true)
-		fetchData(API_ENDPOINT)
-		setIsLoading(false)
-	}, [])
+		setIsLoading(true);
+		fetchData(API_ENDPOINT);
+		setIsLoading(false);
+	}, []);
 
 	if (isLoading) {
 		return (
 			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<ActivityIndicator size={'large'} color='#000000' />
+				<ActivityIndicator size={'large'} color="#000000" />
 			</View>
-		)
+		);
 	}
 
 	if (error) {
@@ -45,7 +45,7 @@ export const TodoList = ({route, navigation}) => {
 					соединение !
 				</Text>
 			</View>
-		)
+		);
 	}
 
 	return (
@@ -57,8 +57,8 @@ export const TodoList = ({route, navigation}) => {
 			<TouchableOpacity
 				style={styles.btn}
 				onPress={() => {
-					fetchData(API_ENDPOINT)
-					setShowList(true)
+					fetchData(API_ENDPOINT);
+					setShowList(true);
 				}}>
 				<Text style={styles.btnText}>ПОЛУЧИТЬ / ОБНОВИТЬ СПИСОК</Text>
 			</TouchableOpacity>
@@ -79,14 +79,14 @@ export const TodoList = ({route, navigation}) => {
 						borderRadius: 6
 					}}
 					keyExtractor={(item, index) => {
-						return item.id + index
+						return item.id + index;
 					}}
 					showsVerticalScrollIndicator={false}
 					refreshControl={
 						<RefreshControl
 							refreshing={isLoading}
 							onRefresh={() => {
-								fetchData(API_ENDPOINT)
+								fetchData(API_ENDPOINT);
 							}}
 						/>
 					}
@@ -116,11 +116,7 @@ export const TodoList = ({route, navigation}) => {
 														article: pos.article,
 														description: pos.description,
 														competitor: item.competitor
-													})
-													{
-														clearImage()
-														clearForm()
-													}
+													});
 												}}>
 												<Text>Взять в работу</Text>
 											</TouchableOpacity>
@@ -143,8 +139,8 @@ export const TodoList = ({route, navigation}) => {
 				/>
 			)}
 		</View>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	searchBox: {
@@ -212,4 +208,4 @@ const styles = StyleSheet.create({
 	itemText: {
 		fontSize: 14
 	}
-})
+});

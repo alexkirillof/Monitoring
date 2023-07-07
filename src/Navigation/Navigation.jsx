@@ -10,13 +10,17 @@ import {ActivityIndicator, View} from 'react-native';
 const Stack = createNativeStackNavigator();
 
 function Navigation() {
-	const {isAuth, setIsAuth} = useContext(AppContext);
+	const {user, setUser} = useContext(AppContext);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isAuth, setIsAuth] = useState(false);
+
 	const getMyAuthValue = async () => {
 		try {
-			const newIsAutn = await AsyncStorage.getItem('isAuth');
-			if (newIsAutn && newIsAutn === 'true') {
-				setIsAuth(true);
+			const storageUserData = await AsyncStorage.getItem('user');
+			if (storageUserData) {
+				setUser(JSON.parse(storageUserData));
+				console.log(JSON.parse(storageUserData).isAuth);
+				setIsAuth(JSON.parse(storageUserData).isAuth);
 				setIsLoading(false);
 			} else {
 				setIsLoading(false);
@@ -28,15 +32,17 @@ function Navigation() {
 
 		console.log('Done.');
 	};
+
 	useEffect(() => {
 		getMyAuthValue();
 	}, []);
+
 	return (
 		<>
 			{!isLoading ? (
 				<NavigationContainer>
 					<Stack.Navigator>
-						{isAuth ? (
+						{isAuth || user?.isAuth ? (
 							<Stack.Screen
 								name="Tab"
 								component={TabStack}
