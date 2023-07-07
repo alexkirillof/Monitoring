@@ -63,8 +63,6 @@ export const AppProvider = ({children}: IProps) => {
 			});
 	};
 
-	//** З А Г Р У З К А  Ф О Т О **//
-
 	//** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
 	const fetchData = async (url: string) => {
 		try {
@@ -84,17 +82,17 @@ export const AppProvider = ({children}: IProps) => {
 	const actualDate = new Date().toLocaleString();
 
 	const sendData = async ({
-		imageGallery,
-		product_group,
-		article,
-		description,
-		competitor,
-		price,
-		promotion,
-		noPrice,
-		comment,
-		actualDate
-	}: {
+								imageGallery,
+								product_group,
+								article,
+								description,
+								competitor,
+								price,
+								promotion,
+								noPrice,
+								comment,
+								actualDate
+							}: {
 		imageGallery: any;
 		product_group: string;
 		article: string;
@@ -144,7 +142,6 @@ export const AppProvider = ({children}: IProps) => {
 					setIsLoading(false);
 				});
 		}
-	};
 
 	//** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
 	type AppContextProps = {
