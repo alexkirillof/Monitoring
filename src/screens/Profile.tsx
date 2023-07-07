@@ -6,21 +6,16 @@ import {AppContext} from '../context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Profile = () => {
-	const [name, setName] = useState('');
-	const [phone, setPhone] = useState('');
-	const {regName, regPhone, logout, clearImage} = useContext(AppContext);
+	const [user, setUser] = useState('');
+	const {logout, clearImage} = useContext(AppContext);
 
 	const getMyAuthValue = async () => {
 		try {
-			const saveUserName = await AsyncStorage.getItem('regName');
-			setName(saveUserName);
-			const saveUserPhone = await AsyncStorage.getItem('regPhone');
-			setPhone(saveUserPhone);
+			const saveUserName = await AsyncStorage.getItem('user');
+			setUser(JSON.parse(saveUserName));
 		} catch (e) {
 			console.log(e);
 		}
-
-		console.log('Done.');
 	};
 	useEffect(() => {
 		getMyAuthValue();
@@ -34,11 +29,11 @@ export const Profile = () => {
 				<View>
 					<View style={styles.dataCard}>
 						<Text>Имя пользователя:</Text>
-						<Text style={styles.mainText}>{regName}</Text>
+						<Text style={styles.mainText}>{user?.userName}</Text>
 					</View>
 					<View style={styles.dataCard}>
 						<Text>Телефон:</Text>
-						<Text style={styles.mainText}>{regPhone}</Text>
+						<Text style={styles.mainText}>{user?.userPhone}</Text>
 					</View>
 					<TouchableOpacity
 						title="В Ы Х О Д"

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -8,35 +8,26 @@ import {
 	TouchableOpacity,
 	TouchableWithoutFeedback,
 	Keyboard
-} from 'react-native'
-import CheckBox from '@react-native-community/checkbox'
-import {AppContext} from '../../context/AppContext'
-import KeyboardAvoidingWrapper from '../KeyboardAvoidingWrapper'
+} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
+import {AppContext} from '../../context/AppContext';
+import KeyboardAvoidingWrapper from '../KeyboardAvoidingWrapper';
 
 export const ArticleContent = ({
 	route,
 	navigation
 }: {
-	route: string
-	navigation: string
+	route: string;
+	navigation: string;
 }) => {
-	const {
-		imageGallery,
-		regName,
-		openGallery,
-		isPromotion,
-		setIsPromotion,
-		price,
-		setPrice,
-		comment,
-		setComment,
-		noPrice,
-		setNoPrice,
-		sendData,
-		data,
-		actualDate
-	} = useContext(AppContext)
-	const {product_group, article, description, competitor} = route.params || {}
+	const {imageGallery, user, openGallery, product, sendData, data, actualDate} =
+		useContext(AppContext);
+	const {product_group, article, description, competitor} = route.params || {};
+
+	const [isPromotion, setIsPromotion] = useState(false);
+	const [price, setPrice] = useState(0);
+	const [comment, setComment] = useState('');
+	const [noPrice, setNoPrice] = useState(false);
 
 	return (
 		<KeyboardAvoidingWrapper>
@@ -67,7 +58,7 @@ export const ArticleContent = ({
 					<TextInput
 						style={styles.input}
 						value={price}
-						keyboardType='number-pad'
+						keyboardType="number-pad"
 						placeholder={'Ц Е Н А'}
 						onChangeText={text => setPrice(text)}
 					/>
@@ -91,7 +82,7 @@ export const ArticleContent = ({
 						style={styles.commentInput}
 						multiline
 						numberOfLines={4}
-						placeholder='К О М Е Н Т А Р И Й'
+						placeholder="К О М Е Н Т А Р И Й"
 						value={comment}
 						onChangeText={text => setComment(text)}
 					/>
@@ -102,7 +93,8 @@ export const ArticleContent = ({
 							style={styles.btn}
 							onPress={() => {
 								sendData(
-									regName,
+									user?.userName,
+									user?.userPhone,
 									product_group,
 									article,
 									data,
@@ -113,8 +105,8 @@ export const ArticleContent = ({
 									noPrice,
 									comment,
 									actualDate
-								)
-								console.log('ушло')
+								);
+								console.log('ушло');
 							}}>
 							<Text style={styles.textName}>О Т П Р А В И Т Ь</Text>
 						</TouchableOpacity>
@@ -122,8 +114,8 @@ export const ArticleContent = ({
 				</View>
 			</View>
 		</KeyboardAvoidingWrapper>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -219,6 +211,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#bbb',
 		borderRadius: 5,
-		textAlignVertical: 'top'
+		textAlignVertical: 'top',
+		marginBottom: 12,
+		marginTop: 5
 	}
-})
+});

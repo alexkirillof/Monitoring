@@ -16,18 +16,19 @@ interface IUser {
 	isAuth: boolean;
 }
 
+interface IProduct {
+	isPromotion: boolean;
+	noPrise: boolean;
+	price: number;
+	comment: string;
+}
+
 export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<IUser | null>(null);
-	const [regName, setRegName] = useState('');
-	const [regPhone, setRegPhone] = useState('');
 	const [prodData, setProdData] = useState([]);
-	const [isAuth, setIsAuth] = useState(false);
 	const [imageGallery, setImageGallery] = useState('');
-	const [isPromotion, setIsPromotion] = useState(false);
-	const [price, setPrice] = useState(0);
-	const [comment, setComment] = useState('');
-	const [noPrice, setNoPrice] = useState(false);
+	const [prouct, setProuct] = useState<IProduct | null>(null);
 
 	//** А В Т О Р И З А Ц И Я **//
 	const login = async (phone: number, password: string) => {
@@ -38,7 +39,6 @@ export const AppProvider = ({children}: IProps) => {
 				password
 			})
 			.then(async res => {
-				await AsyncStorage.setItem('isAuth', 'true');
 				let userInfo = res.data;
 				const newUser: IUser = {
 					userName: userInfo.username,
@@ -46,6 +46,7 @@ export const AppProvider = ({children}: IProps) => {
 					isAuth: userInfo.isAuth
 				};
 				setUser(newUser);
+				await AsyncStorage.setItem('user', JSON.stringify(newUser));
 				setIsLoading(false);
 			})
 			.catch(e => {
@@ -59,8 +60,8 @@ export const AppProvider = ({children}: IProps) => {
 		setIsLoading(true);
 		axios
 			.post(`${BASE_URL}/logout`, {})
-			.then(() => {
-				AsyncStorage.removeItem('isAuth');
+			.then(async res => {
+				await AsyncStorage.removeItem('user');
 				setUser(null);
 				setIsLoading(false);
 			})
@@ -98,11 +99,9 @@ export const AppProvider = ({children}: IProps) => {
 	const fetchData = async (url: string) => {
 		try {
 			setIsLoading(true);
-			// const response = await fetch(url, {method: 'get'})
 			axios.get(url).then(res => {
 				setProdData(res.data);
 				setIsLoading(false);
-				console.log(res.data);
 			});
 		} catch (error) {
 			console.log(error);
@@ -112,10 +111,7 @@ export const AppProvider = ({children}: IProps) => {
 
 	//** О Ч И С Т И Т Ь   Ф О Р М У **//
 	const clearForm = () => {
-		setPrice(0);
-		setIsPromotion(false);
-		setNoPrice(false);
-		setComment('');
+		setProuct(null);
 	};
 
 	//** О Т П Р А В И Т Ь  Д А Н Н Ы Е  Ф О Р М Ы  Н А   С Е Р Е В Е Р **//
@@ -131,6 +127,7 @@ export const AppProvider = ({children}: IProps) => {
 
 	const sendData = async (
 		user_name: string,
+		user_phone: number,
 		product_group: string,
 		article: string,
 		photo: any,
@@ -145,14 +142,15 @@ export const AppProvider = ({children}: IProps) => {
 		setIsLoading(true);
 		const itemData = {
 			user_name: user?.userName,
+			user_phone: user?.userPhone,
 			product_group: product_group,
 			article: article,
 			description: description,
 			competitor: competitor,
-			price: price,
-			promotion: isPromotion,
-			no_price: noPrice,
-			comment: comment,
+			price: prouct?.price,
+			promotion: prouct?.isPromotion,
+			no_price: prouct?.noPrise,
+			comment: prouct?.comment,
 			actual_date: actualDate
 		};
 		for (let key in itemData) {
@@ -164,7 +162,7 @@ export const AppProvider = ({children}: IProps) => {
 				headers: {'Content-Type': 'multipart/form-data'}
 			})
 			.then(res => {
-				console.log(res);
+				console.log(res.data);
 			})
 			.catch(e => {
 				console.log(`register error${e}`);
@@ -184,14 +182,7 @@ export const AppProvider = ({children}: IProps) => {
 		openGallery: Function;
 		fetchData: Function;
 		prodData: string[];
-		isPromotion: boolean;
-		setIsPromotion: (isPromotion: boolean) => void;
-		comment: string;
-		setComment: Function;
-		price: number;
-		setPrice: Function;
-		noPrice: boolean;
-		setNoPrice: Function;
+		product: IProduct | null;
 		clearForm: Function;
 		sendData: Function;
 		data: any;
@@ -209,14 +200,7 @@ export const AppProvider = ({children}: IProps) => {
 		openGallery: openGallery,
 		fetchData: fetchData,
 		prodData: prodData,
-		isPromotion: isPromotion,
-		setIsPromotion: setIsPromotion,
-		comment: comment,
-		setComment: setComment,
-		price: price,
-		setPrice: setPrice,
-		noPrice: noPrice,
-		setNoPrice: setNoPrice,
+		product: prouct,
 		clearForm: clearForm,
 		sendData: sendData,
 		data: data,
