@@ -151,7 +151,6 @@ export const AppProvider = ({children}: IProps) => {
 		logout: Function;
 		user: IUser | null;
 		setUser: Function;
-		clearImage: Function;
 		fetchData: Function;
 		prodData: string[];
 		clearForm: Function;

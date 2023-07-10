@@ -5,25 +5,22 @@ import {
 	View,
 	TextInput,
 	Image,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-	Keyboard
+	TouchableOpacity
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {AppContext} from '../../context/AppContext';
 import KeyboardAvoidingWrapper from '../KeyboardAvoidingWrapper';
 import {launchImageLibrary} from 'react-native-image-picker';
+import CardHeader from '../CardHeader/CardHeader';
 
-export const ArticleContent = ({
-	route,
-	navigation
-}: {
-	route: string;
-	navigation: string;
-}) => {
+export const ArticleContent = ({route, navigation}: {route: string}) => {
 	const {sendData, actualDate} = useContext(AppContext);
-	const {product_group, article, description, competitor} = route.params || {};
+	let {product_group, article, description, competitor} = route.params || {};
 
+	const [currentProductGroup, setProductGroup] = useState('');
+	const [currentArticle, setCurrentArticle] = useState('');
+	const [currentDescription, setCurrentDescription] = useState('');
+	const [currentCompetitor, setCurrentCompetitor] = useState('');
 	const [isPromotion, setIsPromotion] = useState(false);
 	const [price, setPrice] = useState('');
 	const [comment, setComment] = useState('');
@@ -36,6 +33,10 @@ export const ArticleContent = ({
 		setComment('');
 		setNoPrice(false);
 		setImageGallery('');
+		setProductGroup('');
+		setCurrentArticle('');
+		setCurrentDescription('');
+		setCurrentCompetitor('');
 	};
 
 	const openGallery = () => {
@@ -55,29 +56,36 @@ export const ArticleContent = ({
 		});
 	};
 
+	const articleBackFunction = () => {
+		navigation.navigate('TodoList');
+	};
+
 	useEffect(() => {
 		setImageGallery('');
 		submitHandler();
+		setProductGroup(product_group);
+		setCurrentArticle(article);
+		setCurrentDescription(description);
+		setCurrentCompetitor(competitor);
 	}, [article]);
 
 	return (
 		<KeyboardAvoidingWrapper>
 			<View style={{height: '100%'}}>
-				<View style={styles.header}>
-					<TouchableOpacity
-						style={styles.arrowBack}
-						onPress={() => navigation.navigate('TodoList')}>
-						<Text style={styles.arrow}> &#8592;</Text>
-					</TouchableOpacity>
-					<View style={styles.headerTitle}>
-						<Text style={styles.headerText}>Карточка артикула</Text>
-					</View>
-				</View>
+				<CardHeader
+					headerTitle="Карточка товара"
+					backFunctions={articleBackFunction}
+				/>
 				<View style={styles.block}>
-					<Text style={styles.text}> Товарная группа: {product_group}</Text>
-					<Text style={styles.text}> Артикул: {article}</Text>
-					<Text style={styles.text}> Наименование: {description}</Text>
-					<Text style={styles.text}> Магазин конкурента: {competitor}</Text>
+					<Text style={styles.text}>
+						Товарная группа: {currentProductGroup}
+					</Text>
+					<Text style={styles.text}> Артикул: {currentArticle}</Text>
+					<Text style={styles.text}> Наименование: {currentDescription}</Text>
+					<Text style={styles.text}>
+						{' '}
+						Магазин конкурента: {currentCompetitor}
+					</Text>
 
 					<TouchableOpacity style={styles.btn} onPress={openGallery}>
 						<Text>Загрузить фото</Text>
@@ -152,11 +160,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	header: {
-		flexDirection: 'row',
-		justifyContent: 'flex-start',
-		alignItems: 'center'
-	},
 	textName: {
 		fontSize: 16,
 		fontWeight: 'bold'
@@ -172,28 +175,6 @@ const styles = StyleSheet.create({
 		padding: 15,
 		backgroundColor: '#f3f6f0',
 		borderRadius: 25
-	},
-	arrowBack: {
-		height: 50,
-		aspectRatio: 1,
-		backgroundColor: '#b9fbb0',
-		borderRadius: 25,
-		paddingHorizontal: 6,
-		marginRight: 30
-	},
-	arrow: {
-		color: '#000',
-		fontSize: 26,
-		aspectRatio: 1
-	},
-	headerTitle: {
-		alignItems: 'center',
-		marginBottom: 15,
-		marginTop: 15
-	},
-	headerText: {
-		fontSize: 20,
-		fontWeight: 'bold'
 	},
 	btn: {
 		width: '55%',

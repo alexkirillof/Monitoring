@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Profile = () => {
 	const [user, setUser] = useState('');
-	const {logout, clearImage} = useContext(AppContext);
+	const {logout} = useContext(AppContext);
 
 	const getMyAuthValue = async () => {
 		try {
@@ -41,7 +41,6 @@ export const Profile = () => {
 						onPress={() => {
 							console.log('Выход');
 							logout();
-							clearImage();
 						}}>
 						<Text style={styles.btnText}>В Ы Х О Д</Text>
 					</TouchableOpacity>
