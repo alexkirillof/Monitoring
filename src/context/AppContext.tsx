@@ -82,24 +82,24 @@ export const AppProvider = ({children}: IProps) => {
 	const actualDate = new Date().toLocaleString();
 
 	const sendData = async ({
-								imageGallery,
-								product_group,
-								article,
-								description,
-								competitor,
-								price,
-								promotion,
-								noPrice,
-								comment,
-								actualDate
-							}: {
+		imageGallery,
+		product_group,
+		article,
+		description,
+		competitor,
+		price,
+		isPromotion,
+		noPrice,
+		comment,
+		actualDate
+	}: {
 		imageGallery: any;
 		product_group: string;
 		article: string;
 		description: string;
 		competitor: string;
 		price: string;
-		promotion: boolean;
+		isPromotion: boolean;
 		noPrice: boolean;
 		comment: string;
 		actualDate: string;
@@ -121,7 +121,7 @@ export const AppProvider = ({children}: IProps) => {
 				description: description,
 				competitor: competitor,
 				price: price,
-				promotion: promotion,
+				promotion: isPromotion,
 				no_price: noPrice,
 				comment: comment,
 				actual_date: actualDate
@@ -142,6 +142,7 @@ export const AppProvider = ({children}: IProps) => {
 					setIsLoading(false);
 				});
 		}
+	};
 
 	//** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
 	type AppContextProps = {
