@@ -8,7 +8,8 @@ import {
 	FlatList,
 	TouchableOpacity,
 	RefreshControl,
-	Modal
+	Modal,
+	ScrollView
 } from 'react-native';
 import {AppContext} from '../../context/AppContext';
 import {API_ENDPOINT} from '../../config';
@@ -76,16 +77,7 @@ export const TodoList = ({route, navigation}) => {
 			{showList && (
 				<FlatList
 					data={prodData}
-					style={styles.itemContainer}
-					ListHeaderComponentStyle={{
-						height: 45,
-						width: '100%',
-						backgroundColor: '#cee8ed',
-						justifyContent: 'center',
-						alignItems: 'center',
-						marginBottom: 15,
-						borderRadius: 6
-					}}
+					style={styles.ListContainer}
 					keyExtractor={(item, index) => {
 						return item.id + index;
 					}}
@@ -124,43 +116,48 @@ export const TodoList = ({route, navigation}) => {
 								Задание:{competitor.competitor}
 							</Text>
 						</View>
-						{competitor &&
-							competitor.tasks.map(
-								(
-									pos //вывод тасков
-								) => (
-									<View key={pos.article}>
-										<Text>{pos.description}</Text>
-										<Text>{pos.article}</Text>
+						<View style={{flex: 1}}>
+							<ScrollView showsVerticalScrollIndicator={false}>
+								{competitor &&
+									competitor.tasks.map(
+										(
+											pos //вывод тасков
+										) => (
+											<View key={pos.article}>
+												<Text>{pos.description}</Text>
+												<Text>{pos.article}</Text>
 
-										<Text>{pos.product_group}</Text>
-										<TouchableOpacity
-											style={styles.btn}
-											key={pos.article}
-											onPress={() => {
-												navigation.navigate('Article', {
-													product_group: pos.product_group,
-													article: pos.article,
-													description: pos.description,
-													competitor: competitor.competitor
-												});
-												setOpenModal(false);
-											}}>
-											<Text>Взять в работу</Text>
-										</TouchableOpacity>
-										{pos.article !=
-											competitor.tasks[competitor.tasks.length - 1].article && (
-											<View
-												style={{
-													height: 2,
-													backgroundColor: '#9A8F92',
-													width: '100%',
-													marginBottom: 10
-												}}></View>
-										)}
-									</View>
-								)
-							)}
+												<Text>{pos.product_group}</Text>
+												<TouchableOpacity
+													style={styles.btn}
+													key={pos.article}
+													onPress={() => {
+														navigation.navigate('Article', {
+															product_group: pos.product_group,
+															article: pos.article,
+															description: pos.description,
+															competitor: competitor.competitor
+														});
+														setOpenModal(false);
+													}}>
+													<Text>Взять в работу</Text>
+												</TouchableOpacity>
+												{pos.article !=
+													competitor.tasks[competitor.tasks.length - 1]
+														.article && (
+													<View
+														style={{
+															height: 2,
+															backgroundColor: '#9A8F92',
+															width: '100%',
+															marginBottom: 10
+														}}></View>
+												)}
+											</View>
+										)
+									)}
+							</ScrollView>
+						</View>
 					</View>
 				</View>
 			</Modal>
@@ -176,10 +173,26 @@ const styles = StyleSheet.create({
 		borderColor: '#5c6059',
 		borderWidth: 1
 	},
-	itemContainer: {
+	ListContainer: {
+		overflow: 'hidden',
 		backgroundColor: '#f3f6f0',
 		borderRadius: 10,
 		marginTop: 15,
+		padding: 20,
+		paddingBottom: 10,
+		shadowOffset: {
+			width: 2,
+			height: 2
+		},
+		width: '100%'
+	},
+	itemContainer: {
+		flex: 1,
+		overflow: 'hidden',
+		backgroundColor: '#f3f6f0',
+		borderRadius: 10,
+		marginTop: 15,
+		marginBottom: 15,
 		padding: 20,
 		shadowOffset: {
 			width: 2,
@@ -189,7 +202,6 @@ const styles = StyleSheet.create({
 	},
 	modalWrap: {
 		flex: 1,
-
 		backgroundColor: '#cee8ed',
 		padding: 20
 	},
@@ -234,14 +246,14 @@ const styles = StyleSheet.create({
 
 		elevation: 4,
 		borderRadius: 6,
-		height: 40,
+		height: 50,
 		alignItems: 'center',
 		marginBottom: 15,
 		justifyContent: 'center',
 		width: '100%'
 	},
 	itemHeader: {
-		fontSize: 16,
+		fontSize: 14,
 		fontWeight: 'bold'
 	},
 	btnText: {
