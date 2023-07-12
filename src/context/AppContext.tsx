@@ -2,9 +2,6 @@ import React, {createContext, useState, useEffect} from 'react';
 import axios from 'axios';
 import {BASE_URL, BASE_URL_NEW} from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Geolocation from 'react-native-geolocation-service';
-import Geocoder from 'react-native-geocoding';
-import {PermissionsAndroid} from 'react-native';
 
 export const AppContext = createContext(null);
 
@@ -22,36 +19,6 @@ export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<IUser | null>(null);
 	const [prodData, setProdData] = useState([]);
-	const [address, setAddress] = useState(null);
-	const requestLocationPermission = async () => {
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-				{
-					title: 'Geolocation Permission',
-					message: 'Can we access your location?',
-					buttonNeutral: 'Ask Me Later',
-					buttonNegative: 'Cancel',
-					buttonPositive: 'OK'
-				}
-			);
-			console.log('granted', granted);
-			if (granted === 'granted') {
-				Geolocation.getCurrentPosition(position => {
-					console.log(position.coords.latitude.toFixed(5));
-					console.log(position.coords.longitude.toFixed(5));
-				});
-			} else {
-				console.log('You cannot use Geolocation');
-				return false;
-			}
-		} catch (err) {
-			return false;
-		}
-	};
-	useEffect(() => {
-		requestLocationPermission();
-	}, []);
 
 	//** А В Т О Р И З А Ц И Я **//
 	const login = async (phone: number, password: string) => {
