@@ -2,6 +2,7 @@ import React, {createContext, useState, useEffect} from 'react';
 import axios from 'axios';
 import {BASE_URL, BASE_URL_NEW} from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import navigation from '../Navigation/Navigation';
 
 export const AppContext = createContext(null);
 
@@ -54,6 +55,7 @@ export const AppProvider = ({children}: IProps) => {
 				await AsyncStorage.removeItem('user');
 				setUser(null);
 				setIsLoading(false);
+				navigation.navigate('Login');
 			})
 
 			.catch(e => {

@@ -128,26 +128,28 @@ export const ArticleContent = ({route, navigation}: {route: string}) => {
 
 					<View
 						style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-						<TouchableOpacity
-							style={styles.btn}
-							onPress={() => {
-								submitHandler();
-								sendData({
-									imageGallery,
-									product_group,
-									article,
-									description,
-									competitor,
-									price,
-									isPromotion,
-									noPrice,
-									comment,
-									actualDate
-								});
-								console.log('ушло');
-							}}>
-							<Text style={styles.textName}>О Т П Р А В И Т Ь</Text>
-						</TouchableOpacity>
+						{currentArticle && (
+							<TouchableOpacity
+								style={styles.btn}
+								onPress={() => {
+									submitHandler();
+									sendData({
+										imageGallery,
+										product_group,
+										article,
+										description,
+										competitor,
+										price,
+										isPromotion,
+										noPrice,
+										comment,
+										actualDate
+									});
+									console.log('ушло');
+								}}>
+								<Text style={styles.textName}>О Т П Р А В И Т Ь</Text>
+							</TouchableOpacity>
+						)}
 					</View>
 				</View>
 			</View>
