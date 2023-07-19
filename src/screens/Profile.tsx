@@ -4,9 +4,10 @@ import {StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AppContext} from '../context/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {IUser} from '../context/AppContext';
 
 export const Profile = () => {
-	const [user, setUser] = useState('');
+	const [user, setUser] = useState<IUser | null>(null);
 	const {logout} = useContext(AppContext);
 
 	const getMyAuthValue = async () => {
@@ -29,11 +30,11 @@ export const Profile = () => {
 				<View>
 					<View style={styles.dataCard}>
 						<Text>Имя пользователя:</Text>
-						<Text style={styles.mainText}>{user?.userName}</Text>
+						<Text style={styles.mainText}>{user?.user_name}</Text>
 					</View>
 					<View style={styles.dataCard}>
 						<Text>Телефон:</Text>
-						<Text style={styles.mainText}>{user?.userPhone}</Text>
+						<Text style={styles.mainText}>{user?.user_phone}</Text>
 					</View>
 					<TouchableOpacity
 						title="В Ы Х О Д"

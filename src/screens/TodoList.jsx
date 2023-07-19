@@ -5,18 +5,18 @@ import {TodoList} from '../components/TodoList/TodoList';
 import {useNavigation} from '@react-navigation/native';
 
 export const TodoListScreen = () => {
-  const navigation = useNavigation();
-  return (
-    <SafeAreaView style={styles.container}>
-      <TodoList navigation={navigation} />
-    </SafeAreaView>
-  );
+	const navigation = useNavigation();
+	return (
+		<SafeAreaView style={styles.container}>
+			<TodoList navigation={navigation} />
+		</SafeAreaView>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 30,
-    backgroundColor: '#cee8ed',
-  },
+	container: {
+		flex: 1,
+		backgroundColor: '#cee8ed',
+		padding: 30
+	}
 });

@@ -1,13 +1,13 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext} from 'react';
 
-import {Button, StyleSheet, TextInput, View, Text} from 'react-native'
-import Spinner from 'react-native-loading-spinner-overlay'
-import {AppContext} from '../context/AppContext'
+import {Button, StyleSheet, TextInput, View, Text} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {AppContext} from '../context/AppContext';
 
 const LoginScreen = ({navigation}) => {
-	const [phone, setPhone] = useState(null)
-	const [password, setPassword] = useState('')
-	const {isLoading, login} = useContext(AppContext)
+	const [user_phone, setPhone] = useState(null);
+	const [password, setPassword] = useState('');
+	const {isLoading, login} = useContext(AppContext);
 
 	return (
 		<View style={styles.container}>
@@ -16,30 +16,30 @@ const LoginScreen = ({navigation}) => {
 			<View style={styles.wrapper}>
 				<TextInput
 					style={styles.input}
-					title='Номер телефона'
-					value={phone}
-					keyboardType='number-pad'
+					title="Номер телефона"
+					value={user_phone}
+					keyboardType="number-pad"
 					placeholder={'+7 (999) 999 99 99'}
 					onChangeText={text => setPhone(text)}
 				/>
 				<TextInput
 					style={styles.input}
 					value={password}
-					placeholder='П А Р О Л Ь'
+					placeholder="П А Р О Л Ь"
 					onChangeText={text => setPassword(text)}
 					secureTextEntry
 				/>
 				<Button
 					style={styles.link}
-					title='В Х О Д'
+					title="В Х О Д"
 					onPress={() => {
-						login(phone, password)
+						login(user_phone, password);
 					}}
 				/>
 			</View>
 		</View>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -66,5 +66,5 @@ const styles = StyleSheet.create({
 		marginBottom: 30,
 		marginTop: 30
 	}
-})
-export default LoginScreen
+});
+export default LoginScreen;

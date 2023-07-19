@@ -1,6 +1,6 @@
 import React, {createContext, useState, useEffect} from 'react';
 import axios from 'axios';
-import {BASE_URL, BASE_URL_NEW} from '../config';
+import {BASE_URL, DATA_SEND_URL} from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import navigation from '../Navigation/Navigation';
 
@@ -10,31 +10,35 @@ interface IProps {
 	children: React.ReactNode;
 }
 
-interface IUser {
-	userName: string;
-	userPhone: number;
-	isAuth: boolean;
+export interface IUser {
+	id: string;
+	user_name: string;
+	user_phone: string;
+	token: string;
 }
 
 export const AppProvider = ({children}: IProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<IUser | null>(null);
 	const [prodData, setProdData] = useState([]);
+	const [error, setError] = useState('');
 
 	//** А В Т О Р И З А Ц И Я **//
-	const login = async (phone: number, password: string) => {
+	const login = async (user_phone: number, password: string) => {
 		setIsLoading(true);
 		await axios
 			.post(`${BASE_URL}`, {
-				phone,
+				user_phone,
 				password
 			})
 			.then(async res => {
 				let userInfo = res.data;
+				console.log(userInfo);
 				const newUser: IUser = {
-					userName: userInfo.username,
-					userPhone: userInfo.phone,
-					isAuth: userInfo.isAuth
+					id: userInfo.id,
+					user_name: userInfo.user_name,
+					user_phone: userInfo.user_phone,
+					token: userInfo.token
 				};
 				setUser(newUser);
 				await AsyncStorage.setItem('user', JSON.stringify(newUser));
@@ -68,12 +72,19 @@ export const AppProvider = ({children}: IProps) => {
 	const fetchData = async (url: string) => {
 		try {
 			setIsLoading(true);
-			axios.get(url).then(res => {
-				setProdData(res.data);
-				setIsLoading(false);
-			});
+			const config = {
+				headers: {Authorization: `Bearer ${user?.token}`}
+			};
+			axios
+				.get(url, config)
+				.then(res => {
+					setProdData(res.data);
+					setIsLoading(false);
+				})
+				.catch(err => {
+					setError(err.response.data.message);
+				});
 		} catch (error) {
-			console.log(error);
 			setIsLoading(false);
 		}
 	};
@@ -115,8 +126,8 @@ export const AppProvider = ({children}: IProps) => {
 		});
 		if (user) {
 			const itemData = {
-				user_name: user.userName,
-				user_phone: user.userPhone,
+				user_name: user.user_name,
+				user_phone: user.user_phone,
 				product_group: product_group,
 				article: article,
 				description: description,
@@ -132,7 +143,7 @@ export const AppProvider = ({children}: IProps) => {
 				data.append(key, item);
 			}
 			await axios
-				.post(`${BASE_URL_NEW}`, data, {
+				.post(`${DATA_SEND_URL}`, data, {
 					headers: {'Content-Type': 'multipart/form-data'}
 				})
 				.then(res => {
@@ -157,6 +168,7 @@ export const AppProvider = ({children}: IProps) => {
 		clearForm: Function;
 		sendData: Function;
 		actualDate: string;
+		error: string;
 	};
 
 	const defaultValue: AppContextProps = {
@@ -168,7 +180,8 @@ export const AppProvider = ({children}: IProps) => {
 		fetchData: fetchData,
 		prodData: prodData,
 		sendData: sendData,
-		actualDate: actualDate
+		actualDate: actualDate,
+		error: error
 	};
 
 	return (

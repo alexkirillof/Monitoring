@@ -12,15 +12,12 @@ const Stack = createNativeStackNavigator();
 function Navigation() {
 	const {user, setUser} = useContext(AppContext);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isAuth, setIsAuth] = useState(false);
 
 	const getMyAuthValue = async () => {
 		try {
 			const storageUserData = await AsyncStorage.getItem('user');
 			if (storageUserData) {
 				setUser(JSON.parse(storageUserData));
-				console.log(JSON.parse(storageUserData).isAuth);
-				setIsAuth(JSON.parse(storageUserData).isAuth);
 				setIsLoading(false);
 			} else {
 				setIsLoading(false);
@@ -42,7 +39,7 @@ function Navigation() {
 			{!isLoading ? (
 				<NavigationContainer>
 					<Stack.Navigator>
-						{isAuth || user?.isAuth ? (
+						{user ? (
 							<Stack.Screen
 								name="Tab"
 								component={TabStack}

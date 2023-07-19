@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 
 import {
 	StyleSheet,
@@ -12,22 +12,18 @@ import {
 	ScrollView
 } from 'react-native';
 import {AppContext} from '../../context/AppContext';
-import {API_ENDPOINT} from '../../config';
+import {API_ENDPOINT, API_TASKS} from '../../config';
 import CardHeader from '../CardHeader/CardHeader';
+import axios from 'axios';
 
 export const TodoList = ({route, navigation}) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const [taskError, setTaskError] = useState(null);
 	const [showList, setShowList] = useState(false);
 	const [competitor, setCompetitor] = useState('');
+	const [tasks, setTasks] = useState('');
 	const [openModal, setOpenModal] = useState(false);
-	const {fetchData, prodData} = useContext(AppContext);
-
-	useEffect(() => {
-		setIsLoading(true);
-		fetchData(API_ENDPOINT);
-		setIsLoading(false);
-	}, []);
+	const {fetchData, prodData, error} = useContext(AppContext);
 
 	if (isLoading) {
 		return (
@@ -37,19 +33,20 @@ export const TodoList = ({route, navigation}) => {
 		);
 	}
 
-	if (error) {
-		return (
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<Text>
-					Ошибка загрузки данных ...Пожалуйста, проверьте ваше интернет
-					соединение !
-				</Text>
-			</View>
-		);
-	}
-
-	const getCompetitor = item => {
+	const fetchTasks = async (url, id) => {
+		try {
+			setIsLoading(true);
+			axios.post(url, {id}).then(res => {
+				setTasks(res.data);
+				setIsLoading(false);
+			});
+		} catch (error) {
+			setIsLoading(false);
+		}
+	};
+	const getCompetitor = (item, id) => {
 		setCompetitor(item);
+		fetchTasks(API_TASKS, id);
 		setOpenModal(true);
 	};
 
@@ -74,36 +71,42 @@ export const TodoList = ({route, navigation}) => {
 
 			{/*--render списка--*/}
 
-			{showList && (
-				<FlatList
-					data={prodData}
-					style={styles.ListContainer}
-					keyExtractor={(item, index) => {
-						return item.id + index;
-					}}
-					showsVerticalScrollIndicator={false}
-					refreshControl={
-						<RefreshControl
-							refreshing={isLoading}
-							onRefresh={() => {
-								fetchData(API_ENDPOINT);
-							}}
-						/>
-					}
-					renderItem={({item}) => (
-						<View key={item.tasks.article} style={styles.itemHeaderContainer}>
-							<TouchableOpacity
-								onPress={() => {
-									getCompetitor(item);
-								}}>
-								<Text style={styles.itemHeader}>
-									Задание: {item.competitor}
-								</Text>
-							</TouchableOpacity>
-						</View>
-					)}
-				/>
-			)}
+			{showList &&
+				(error ? (
+					<View style={styles.ListContainer}>
+						<Text>{error}</Text>
+					</View>
+				) : (
+					<FlatList
+						data={prodData}
+						style={styles.ListContainer}
+						contentContainerStyle={{paddingBottom: 20}}
+						keyExtractor={(item, index) => {
+							return item.id + index;
+						}}
+						showsVerticalScrollIndicator={false}
+						refreshControl={
+							<RefreshControl
+								refreshing={isLoading}
+								onRefresh={() => {
+									fetchData(API_ENDPOINT);
+								}}
+							/>
+						}
+						renderItem={({item}) => (
+							<View key={item.id} style={styles.itemHeaderContainer}>
+								<TouchableOpacity
+									onPress={() => {
+										getCompetitor(item, item.id);
+									}}>
+									<Text style={styles.itemHeader}>
+										Задание: {item.competitor}
+									</Text>
+								</TouchableOpacity>
+							</View>
+						)}
+					/>
+				))}
 			<Modal visible={openModal} animationType="fade">
 				<View style={styles.modalWrap}>
 					<CardHeader
@@ -119,7 +122,8 @@ export const TodoList = ({route, navigation}) => {
 						<View style={{flex: 1}}>
 							<ScrollView showsVerticalScrollIndicator={false}>
 								{competitor &&
-									competitor.tasks.map(
+									tasks &&
+									tasks.map(
 										(
 											pos //вывод тасков
 										) => (
@@ -142,9 +146,7 @@ export const TodoList = ({route, navigation}) => {
 													}}>
 													<Text>Взять в работу</Text>
 												</TouchableOpacity>
-												{pos.article !=
-													competitor.tasks[competitor.tasks.length - 1]
-														.article && (
+												{pos.article != tasks[tasks.length - 1].article && (
 													<View
 														style={{
 															height: 2,
@@ -174,12 +176,12 @@ const styles = StyleSheet.create({
 		borderWidth: 1
 	},
 	ListContainer: {
+		maxHeight: '78%',
 		overflow: 'hidden',
 		backgroundColor: '#f3f6f0',
 		borderRadius: 10,
-		marginTop: 15,
 		padding: 20,
-		paddingBottom: 10,
+		paddingBottom: 0,
 		shadowOffset: {
 			width: 2,
 			height: 2
