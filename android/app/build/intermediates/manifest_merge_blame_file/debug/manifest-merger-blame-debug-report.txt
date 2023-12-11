@@ -1,0 +1,137 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.monitoring"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="33" />
+10
+11    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+11-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:5:5-77
+11-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:5:22-75
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:4:5-66
+12-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:4:22-64
+13    <uses-permission android:name="android.permission.CAMERA" />
+13-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:5:5-64
+13-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:5:22-62
+14    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+14-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:6:5-80
+14-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:6:22-78
+15    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+15-->[com.facebook.flipper:flipper:0.125.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\7791fe77b8ab9730d0e25ce55c6aa090\transformed\jetified-flipper-0.125.0\AndroidManifest.xml:16:5-76
+15-->[com.facebook.flipper:flipper:0.125.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\7791fe77b8ab9730d0e25ce55c6aa090\transformed\jetified-flipper-0.125.0\AndroidManifest.xml:16:22-73
+16
+17    <application
+17-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:9:5-29:19
+18        android:name="com.monitoring.MainApplication"
+18-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:10:13-44
+19        android:allowBackup="false"
+19-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:14:13-40
+20        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+20-->[androidx.core:core:1.7.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\c05df83dbc847297b7ccad2bb18337e0\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
+21        android:debuggable="true"
+22        android:icon="@mipmap/ic_launcher"
+22-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:12:13-47
+23        android:label="@string/app_name"
+23-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:11:13-45
+24        android:requestLegacyExternalStorage="true"
+24-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:16:13-56
+25        android:roundIcon="@mipmap/ic_launcher_round"
+25-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:13:13-58
+26        android:theme="@style/AppTheme"
+26-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:15:13-44
+27        android:usesCleartextTraffic="true" >
+27-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:8:9-44
+28        <activity
+28-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:11:9-111
+29            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+29-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:11:19-83
+30            android:exported="false" />
+30-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\debug\AndroidManifest.xml:11:84-108
+31        <activity
+31-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:17:9-28:20
+32            android:name="com.monitoring.MainActivity"
+32-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:18:17-45
+33            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+33-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:20:17-126
+34            android:exported="true"
+34-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:23:17-40
+35            android:label="@string/app_name"
+35-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:19:17-49
+36            android:launchMode="singleTask"
+36-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:21:17-48
+37            android:windowSoftInputMode="adjustResize" >
+37-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:22:17-59
+38            <intent-filter>
+38-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:24:13-27:29
+39                <action android:name="android.intent.action.MAIN" />
+39-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:25:17-68
+39-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:25:25-66
+40
+41                <category android:name="android.intent.category.LAUNCHER" />
+41-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:26:17-76
+41-->C:\Users\a.kirillov\Documents\MyProjects\Monitoring\android\app\src\main\AndroidManifest.xml:26:27-74
+42            </intent-filter>
+43        </activity>
+44
+45        <provider
+45-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-18:20
+46            android:name="com.imagepicker.ImagePickerProvider"
+46-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-63
+47            android:authorities="com.monitoring.imagepickerprovider"
+47-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-71
+48            android:exported="false"
+48-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-37
+49            android:grantUriPermissions="true" >
+49-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-47
+50            <meta-data
+50-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:15:13-17:70
+51                android:name="android.support.FILE_PROVIDER_PATHS"
+51-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:16:17-67
+52                android:resource="@xml/imagepicker_provider_paths" />
+52-->[:react-native-image-picker] C:\Users\a.kirillov\Documents\MyProjects\Monitoring\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:17:17-67
+53        </provider>
+54
+55        <activity
+55-->[com.google.android.gms:play-services-base:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d733e851003cba4e6ef62cce1879546b\transformed\jetified-play-services-base-17.5.0\AndroidManifest.xml:23:9-26:75
+56            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+56-->[com.google.android.gms:play-services-base:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d733e851003cba4e6ef62cce1879546b\transformed\jetified-play-services-base-17.5.0\AndroidManifest.xml:24:13-79
+57            android:exported="false"
+57-->[com.google.android.gms:play-services-base:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d733e851003cba4e6ef62cce1879546b\transformed\jetified-play-services-base-17.5.0\AndroidManifest.xml:25:13-37
+58            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+58-->[com.google.android.gms:play-services-base:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d733e851003cba4e6ef62cce1879546b\transformed\jetified-play-services-base-17.5.0\AndroidManifest.xml:26:13-72
+59
+60        <meta-data
+60-->[com.google.android.gms:play-services-basement:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\5eb6ecffddd002f3888c333c623272c2\transformed\jetified-play-services-basement-17.5.0\AndroidManifest.xml:23:9-25:69
+61            android:name="com.google.android.gms.version"
+61-->[com.google.android.gms:play-services-basement:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\5eb6ecffddd002f3888c333c623272c2\transformed\jetified-play-services-basement-17.5.0\AndroidManifest.xml:24:13-58
+62            android:value="@integer/google_play_services_version" />
+62-->[com.google.android.gms:play-services-basement:17.5.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\5eb6ecffddd002f3888c333c623272c2\transformed\jetified-play-services-basement-17.5.0\AndroidManifest.xml:25:13-66
+63
+64        <provider
+64-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:26:9-34:20
+65            android:name="androidx.startup.InitializationProvider"
+65-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:27:13-67
+66            android:authorities="com.monitoring.androidx-startup"
+66-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:28:13-68
+67            android:exported="false" >
+67-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:29:13-37
+68            <meta-data
+68-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:31:13-33:52
+69                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+69-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:32:17-75
+70                android:value="androidx.startup" />
+70-->[androidx.emoji2:emoji2:1.0.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\f1880cf4497a0a81e315b120458930c1\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:33:17-49
+71            <meta-data
+71-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d734cd817a6eba2dc56ecab0ed4b46f1\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:31:13-33:52
+72                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+72-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d734cd817a6eba2dc56ecab0ed4b46f1\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:32:17-78
+73                android:value="androidx.startup" />
+73-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\a.kirillov\.gradle\caches\transforms-3\d734cd817a6eba2dc56ecab0ed4b46f1\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:33:17-49
+74        </provider>
+75    </application>
+76
+77</manifest>

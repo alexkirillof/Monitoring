@@ -1,231 +1,319 @@
-import React, {createContext, useState} from "react";
-import axios from "axios";
-import {BASE_URL} from "../config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {launchImageLibrary} from "react-native-image-picker";
+import React, {createContext, useState, useEffect} from 'react';
+import axios from 'axios';
+import {
+	BASE_URL,
+	API_TASKS,
+	ACCESS_TOKEN,
+	API_TASK,
+	API_POST_TASKS
+} from '../config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import navigation from '../Navigation/Navigation';
 
+export const AppContext = createContext(null);
 
-export const AppContext = createContext();
+interface IProps {
+	children: React.ReactNode;
+}
 
-export const AppProvider = ({children}) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [regName, setRegName] = useState("");
-    const [prodData, setProdData] = useState([]);
-    const [regPhone, setRegPhone] = useState(null);
-    const [error, setError] = useState(null);
-    const [regPassword, setRegPassword] = useState("");
-    const [isAuth, setIsAuth] = useState(false);
-    const [imageGallery, setImageGallery] = useState('');
-    const [isPromotion, setIsPromotion] = useState(false);
-    const [price, setPrice] = useState(null);
-    const [comment, setComment] = useState('');
-    const [noPrice, setNoPrice] = useState(false);
+export interface IUser {
+	id: string;
+	user_name: string;
+	user_phone: string;
+	token: string;
+}
 
-    // const API_ENDPOINT = "https://647dde56af984710854a8134.mockapi.io/Posts";
+export interface ICompetitor {
+	competitor: string;
+	id: string;
+	locid: string;
+	rivalid: string;
+}
 
-    //** Р Е Г И С Т Р А Ц И Я **//
-    const register = async (name: string, phone: number, password: string) => {
-        setIsLoading(true);
-        await axios.post(`${BASE_URL}`, {
-            name, phone, password,
-        }).then(res => {
-            let userInfo = res.config.data
-            let parsedData = JSON.parse(userInfo)
-            setRegName(() => parsedData.name)
-            console.log(regName);
-            setRegPhone(() => parsedData.phone)
-            console.log(regPhone);
-            setRegPassword(() => parsedData.password);
-            console.log(regPassword);
-            setIsLoading(false);
-        }).catch(e => {
-            console.log(`register error${e}`);
-            setIsLoading(false);
-        });
-    };
+export interface ITasks {
+	article: 'string';
+	date_task: 'string';
+	description: 'string';
+	docid: 'string';
+	locid: 'string';
+	product_group: 'string';
+	storeId: 'string';
+	userId: 'string';
+}
 
-    //** А В Т О Р И З А Ц И Я **//
-    const login = (name: string, phone: number, password: string) => {
-        setIsLoading(true);
-        axios.post(`${BASE_URL}`, {
-            name, phone, password,
-        }).then(res => {
-            let userInfo = res.config.data;
-            let parsedData = JSON.parse(userInfo);
-            setIsAuth(true)
-            setIsLoading(false);
-        }).catch(e => {
-            console.log(`register error${e}`);
-            setIsLoading(false);
-        });
-    };
+export const AppProvider = ({children}: IProps) => {
+	const [isLoading, setIsLoading] = useState(false);
+	const [user, setUser] = useState<IUser>();
+	const [prodData, setProdData] = useState([]);
+	const [error, setError] = useState('');
+	const [message, setMessage] = useState('');
+	const [competitor, setCompetitor] = useState(null);
+	const [katValue, setKatValue] = useState('');
+	const [tasks, setTasks] = useState([]);
+	const [count, setCount] = useState(0);
+	const [isTasksShow, setIsTasksShow] = useState(true);
 
-    //** Д Е А В Т О Р И З А Ц И Я **//
-    const logout = () => {
-        setIsLoading(true);
-        axios
-            .post(
-                `${BASE_URL}`,
-                {},
-            )
-            .then(res => {
-                console.log(res.config.data);
-                AsyncStorage.removeItem("isAuth");
-                setIsAuth(false);
-                setRegName('');
-                setRegPassword('');
-                setRegPhone('');
-                setIsLoading(false);
-            })
-            .catch(e => {
-                console.log(`logout error ${e}`);
-                setIsLoading(false);
-            });
-    };
+	//** А В Т О Р И З А Ц И Я **//
+	const login = async (user_phone: number, password: string) => {
+		setIsLoading(true);
+		await axios
+			.post(
+				`${BASE_URL}`,
+				{
+					user_phone,
+					password
+				},
+				{
+					headers: {
+						access_token: `${ACCESS_TOKEN}`
+					}
+				}
+			)
+			.then(async res => {
+				let userInfo = res.data;
+				const newUser: IUser = {
+					id: userInfo.id,
+					user_name: userInfo.user_name,
+					user_phone: userInfo.user_phone,
+					token: userInfo.token
+				};
+				setUser(newUser);
+				await AsyncStorage.setItem('user', JSON.stringify(newUser));
+				setIsLoading(false);
+			})
+			.catch(e => {
+				setIsLoading(false);
+				setError(e);
+				console.log(`register error${e}`);
+			});
+	};
 
-    //** З А Г Р У З К А  Ф О Т О **//
-    const openGallery = () => {
-        const option = {
-            mediaType: 'photo',
-            quality: 1
-        }
-        launchImageLibrary(option, (res) => {
-            if (res.didCancel) {
-                console.log('User Cancelled image picker')
-            } else if (res.errorCode) {
-                console.log(res.errorMessage)
-            } else {
-                const data = res.assets[0]
-                setImageGallery(data)
-                console.log(data)
-            }
-        })
-    }
+	//** Д Е А В Т О Р И З А Ц И Я **//
+	const logout = async () => {
+		setIsLoading(true);
+		try {
+			await AsyncStorage.removeItem('user');
+			setUser(null);
+			setIsLoading(false);
+			navigation.navigate('Login');
+		} catch (e) {
+			console.log(`logout error ${e}`);
+			setIsLoading(false);
+		}
+	};
 
-    //** О Ч И С Т И Т Ь  Ф О Т О **//
-    const clearImage = () => {
-        setImageGallery('')
-    }
+	//** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
+	const fetchData = async (url: string) => {
+		try {
+			setIsLoading(true);
+			const config = {
+				headers: {
+					Authorization: `Bearer ${user?.token}`,
+					access_token: `${ACCESS_TOKEN}`
+				}
+			};
+			axios
+				.get(`${url}?user_token=${user?.token}`, config)
+				.then(res => {
+					setProdData(res.data);
+					setIsLoading(false);
+				})
+				.catch(err => {
+					setError(err.response.data.message);
+					setIsLoading(false);
+					return;
+				});
+		} catch (error) {
+			setIsLoading(false);
+		}
+	};
 
-    //** З А Г Р У З И Т Ь  З А Д А Н И Я  С  С Е Р В Е Р А **//
-    const fetchData = async (url: string) => {
-        try {
-            setIsLoading(true);
-            const response = await fetch(url);
-            const json = await response.json();
-            setProdData(json);
-            setIsLoading(false);
+	//** З А Г Р У З К А  З А Д А Н И Й **//
+	const loadTasksData = id => {
+		return axios.get(`${API_TASKS}?user_token=${user?.token}&rivalid=${id}`, {
+			headers: {
+				access_token: `${ACCESS_TOKEN}`
+			}
+		});
+	};
+	//** П О Л У Ч Е Н И Е  З А Д А Н И Й **//
+	const loadTasksForGroop = async (rId: string) => {
+		await axios
+			.get(
+				`${API_TASK}?user_token=${user?.token}&rivalid=${rId}&tree=${katValue}`,
+				{
+					headers: {
+						access_token: `${ACCESS_TOKEN}`
+					}
+				}
+			)
+			.then(res => {
+				if (res.data) {
+					setTasks(res.data);
+				}
+				setIsLoading(false);
+			})
+			.catch(e => {
+				setIsLoading(false);
+				console.log(e);
+			});
+	};
 
-        } catch (error) {
-            setError(error);
-            console.log("%c%s", "color: red;", error);
-            setIsLoading(false);
-        }
-    };
+	//** О Т П Р А В И Т Ь  Д А Н Н Ы Е  Ф О Р М Ы  Н А   С Е Р Е В Е Р **//
+	const formatDate = () => {
+		let t = new Date();
+		let z = t.getTimezoneOffset() * 60 * 1000;
+		let tLocal = t - z;
+		tLocal = new Date(tLocal);
+		let iso = tLocal.toISOString().split('.')[0].replace('T', ' ');
+		return iso;
+	};
 
-    //** О Ч И С Т И Т Ь   Ф О Р М У **//
-    const clearForm = () => {
-        setPrice(null);
-        setIsPromotion(false);
-        setPrice(null);
-        setNoPrice(false);
-        setComment('');
-    }
+	// const actualDate = new Date().toLocaleString("ru - RU");
+	const actualDate = formatDate();
 
-//** О Т П Р А В И Т Ь  Д А Н Н Ы Е  Ф О Р М Ы  Н А   С Е Р Е В Е Р **//
+	const sendData = async ({
+		imageGallery,
+		product_group,
+		article,
+		description,
+		competitor,
+		price,
+		isPromotion,
+		noPrice,
+		comment,
+		actualDate,
+		latitude,
+		longitude,
+		docid,
+		date_task,
+		locid,
+		rivalid
+	}: {
+		imageGallery: any;
+		product_group: string;
+		article: string;
+		description: string;
+		competitor: string;
+		price: string;
+		isPromotion: boolean;
+		noPrice: boolean;
+		comment: string;
+		actualDate: string;
+		latitude: number;
+		longitude: number;
+		docid: number;
+		date_task: string;
+		locid: number;
+		rivalid: number;
+	}) => {
+		setIsLoading(true);
+		const data = new FormData();
 
-    const data = new FormData();
-    data.append('my_photo', {
-        uri: imageGallery.uri, // your file path string
-        name: imageGallery.fileName,
-        type: 'image/jpg'
-    })
+		imageGallery.forEach((item, i) => {
+			data.append('my_photo[]', {
+				uri: item.uri,
+				type: 'image/jpeg',
+				name: item.fileName || `filename${i}.jpg`
+			});
+		});
+		if (user) {
+			const itemData = JSON.stringify({
+				user_name: user.user_name,
+				user_phone: user.user_phone,
+				product_group: product_group,
+				article: article,
+				description: description,
+				competitor: competitor,
+				price: price,
+				promotion: +isPromotion,
+				no_price: +noPrice,
+				comment: comment,
+				actual_date: actualDate,
+				latitude: latitude,
+				longitude: longitude,
+				docid: docid,
+				date_task: date_task,
+				locid: locid,
+				rivalid: rivalid
+			});
 
-    const actualDate = new Date().toLocaleString();
+			data.append('content', itemData);
+			await axios
+				.post(`${API_POST_TASKS}?user_token=${user?.token}`, data, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						access_token: `${ACCESS_TOKEN}`
+					}
+				})
+				.then(res => {
+					setMessage(res.data.message);
+					setCount(prev => prev + 1);
+					setIsLoading(false);
+				})
+				.catch(e => {
+					setIsLoading(false);
+				});
+		}
+	};
 
+	//** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
+	type AppContextProps = {
+		isLoading: boolean;
+		setIsLoading: Function;
+		login: Function;
+		logout: Function;
+		user: IUser | null;
+		setUser: Function;
+		fetchData: Function;
+		prodData: string[];
+		clearForm: Function;
+		sendData: Function;
+		actualDate: string;
+		error: string;
+		message: string;
+		competitor: ICompetitor | null;
+		setCompetitor: Function;
+		loadTasksData: Function;
+		katValue: string;
+		setKatValue: Function;
+		loadTasksForGroop: Function;
+		tasks: ITasks;
+		setTasks: Function;
+		count: number;
+		setCount: Function;
+		isTasksShow: boolean;
+		setIsTasksShow: Function;
+	};
 
-    const sendData = async (regName: string, product_group: string, article: string, data: any, description: string, competitor: string, price: number, isPromotion: boolean, noPrice: boolean, comment: string, actualDate: string) => {
-        setIsLoading(true);
+	const defaultValue: AppContextProps = {
+		isLoading: isLoading,
+		setIsLoading: setIsLoading,
+		login: login,
+		logout: logout,
+		user: user,
+		setUser: setUser,
+		fetchData: fetchData,
+		prodData: prodData,
+		sendData: sendData,
+		actualDate: actualDate,
+		error: error,
+		message: message,
+		competitor: competitor,
+		setCompetitor: setCompetitor,
+		loadTasksData: loadTasksData,
+		katValue: katValue,
+		setKatValue: setKatValue,
+		loadTasksForGroop: loadTasksForGroop,
+		tasks: tasks,
+		setTasks: setTasks,
+		count: count,
+		setCount: setCount,
+		isTasksShow: isTasksShow,
+		setIsTasksShow: setIsTasksShow
+	};
 
-        await axios.post(`${BASE_URL}`, {
-            "Кто отправил": regName,
-            "Товарная группа": product_group,
-            "Артикул": article,
-            "Фото": data,
-            "Наименование": description,
-            "Конкурент": competitor,
-            "Цена": price,
-            "Акция": isPromotion,
-            "Ценник отсутствует": noPrice,
-            "Коментарий": comment,
-            "Дата и время": actualDate
-        }).catch(e => {
-            console.log(`register error${e}`);
-            setIsLoading(false);
-        });
-    };
-
-
-    //** О Б Ъ Е К Т   К О Н Т Е К С Т А **//
-    type AppContextProps = {
-        isLoading: boolean
-        isAuth: boolean
-        register: () => {}
-        login: () => {}
-        logout: () => {}
-        regName: string
-        regPhone: number
-        imageGallery: string
-        clearImage: () => {}
-        openGallery: () => {}
-        fetchData: () => {}
-        prodData: string[]
-        isPromotion: boolean
-        setIsPromotion: (isPromotion: boolean) => void
-        comment: string
-        setComment: () => {}
-        price: number
-        setPrice: () => {}
-        noPrice: boolean
-        setNoPrice: (noPrice: boolean) => void
-        clearForm: () => {}
-        sendData: () => {}
-        data: any
-        actualDate:string
-    };
-
-    const defaultValue: AppContextProps = {
-        isLoading: isLoading,
-        isAuth: isAuth,
-        register: register,
-        login: login,
-        logout: logout,
-        regName: regName,
-        regPhone: regPhone,
-        imageGallery: imageGallery,
-        clearImage: clearImage,
-        openGallery: openGallery,
-        fetchData: fetchData,
-        prodData: prodData,
-        isPromotion: isPromotion,
-        setIsPromotion: setIsPromotion,
-        comment: comment,
-        setComment: setComment,
-        price: price,
-        setPrice: setPrice,
-        noPrice: noPrice,
-        setNoPrice: setNoPrice,
-        clearForm: clearForm,
-        sendData: sendData,
-        data: data,
-        actualDate:actualDate
-    };
-
-
-    return (
-        <AppContext.Provider value={defaultValue}>
-            {children}
-        </AppContext.Provider>
-    );
+	return (
+		<AppContext.Provider value={defaultValue}>{children}</AppContext.Provider>
+	);
 };
-
